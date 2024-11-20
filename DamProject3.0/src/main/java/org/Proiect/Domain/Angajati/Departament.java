@@ -21,7 +21,8 @@ public class Departament {
 
     @ManyToOne
     @JoinColumn(name = "id_manager_proiect")
-    private ManagerProiect managerProiect;;
+    private ManagerProiect managerProiect;
+
 
     @OneToMany(mappedBy = "departament", cascade = CascadeType.ALL)
     private List<AppUser> users;

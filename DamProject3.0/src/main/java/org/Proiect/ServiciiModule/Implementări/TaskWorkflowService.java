@@ -7,10 +7,11 @@ import org.Proiect.ServiciiModule.ManagementEchipe.ManagementDepartamente.Angaja
 import org.Proiect.ServiciiModule.ManagementTaskuri.ITaskWorkflowService;
 import org.Proiect.ServiciiModule.ManagementTaskuri.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
-
+@Service
 public class TaskWorkflowService implements ITaskWorkflowService {
     @Autowired
     private TaskRepository taskRepository;

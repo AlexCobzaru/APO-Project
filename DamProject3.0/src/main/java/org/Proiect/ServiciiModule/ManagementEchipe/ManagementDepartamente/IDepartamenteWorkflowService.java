@@ -5,5 +5,5 @@ public interface IDepartamenteWorkflowService {
 
     void adaugaAngajatDepartament(Integer departamentId, Integer angajatId);
 
-   // DepartamentSummaryView obtineSumarDepartament(Integer departamentId);
+
 }

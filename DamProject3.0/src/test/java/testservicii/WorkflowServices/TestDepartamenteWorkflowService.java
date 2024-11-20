@@ -3,11 +3,12 @@ package testservicii.WorkflowServices;
 import java.util.logging.Logger;
 
 import org.Proiect.ServiciiModule.ManagementEchipe.ManagementDepartamente.IDepartamenteWorkflowService;
+import org.Proiect.SpringBootDomain_AplicatieDAM;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = SpringBootDomain_AplicatieDAM.class)
 public class TestDepartamenteWorkflowService {
 
     private static Logger logger = Logger.getLogger(TestDepartamenteWorkflowService.class.getName());
@@ -27,4 +28,6 @@ public class TestDepartamenteWorkflowService {
         departamenteWorkflowService.adaugaAngajatDepartament(departamentId, 202);
         logger.info("Angajat adăugat în departament.");
     }
+
+
 }

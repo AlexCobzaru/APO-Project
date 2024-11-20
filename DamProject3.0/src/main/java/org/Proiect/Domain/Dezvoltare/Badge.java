@@ -16,4 +16,5 @@ public class Badge {
     @ManyToOne
     @JoinColumn(name = "id_curs")
     private Curs curs;
+
 }
