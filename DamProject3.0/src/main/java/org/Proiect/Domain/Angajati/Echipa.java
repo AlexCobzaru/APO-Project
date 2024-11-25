@@ -29,7 +29,11 @@ public class Echipa {
     @ManyToOne
     @JoinColumn(name = "proiect_id")  // Adăugăm o coloană pentru a lega echipa de proiect
     private Proiect proiect;
+    private boolean arhivata; // Adăugăm atributul de arhivare
 
+    public boolean isArhivata() {
+        return arhivata;
+    }
     @ManyToOne
     @JoinColumn(name = "id_lider")
     private Utilizator lider;

@@ -43,8 +43,10 @@ public interface AppUserRepository extends JpaRepository <Utilizator, Integer> {
             @Param("echipaId") Integer echipaId,
             @Param("tipUtilizator") TipUtilizator tipUtilizator,
             @Param("exclusMembruId") Integer exclusMembruId);
-
+    @Query("SELECT u FROM Utilizator u WHERE u.echipa.idEchipa = :echipaId")
+    List<Utilizator> findAllByEchipa(@Param("echipaId") Integer echipaId);
 }
+
 
 
 

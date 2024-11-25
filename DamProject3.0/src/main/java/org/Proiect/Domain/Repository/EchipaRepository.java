@@ -6,6 +6,7 @@ import org.Proiect.Domain.App.TipUtilizator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,5 +29,7 @@ public interface EchipaRepository extends JpaRepository<Echipa,Integer> {
     List<Utilizator> findAllByEchipaIdAndDisponibilTrueAndTipUtilizator(
             @Param("echipaId") Integer echipaId,
             @Param("tipUtilizator") TipUtilizator tipUtilizator);
-
+    @Modifying
+    @Query("UPDATE Echipa e SET e.arhivata = :arhivata WHERE e.idEchipa = :echipaId")
+    void updateArhivare(@Param("echipaId") Integer echipaId, @Param("arhivata") boolean arhivata);
 }

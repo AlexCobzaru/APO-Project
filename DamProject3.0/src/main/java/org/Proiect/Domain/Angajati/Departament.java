@@ -23,6 +23,7 @@ public class Departament {
     private String numeDepartament;
 
 
+
     @ManyToOne
     @JoinColumn(name = "id_manager_proiect")
     private Utilizator managerProiect;

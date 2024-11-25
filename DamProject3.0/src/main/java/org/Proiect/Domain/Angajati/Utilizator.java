@@ -35,6 +35,7 @@ public class Utilizator {
     private TipUtilizator tipUtilizator;
     @Column(name = "depasiriDeadline", nullable = false)
     private int depasiriDeadline = 0;
+    private String rol;
     @Column(nullable = false)
     private boolean disponibil = true; // Valoare implicită: disponibil
     // Relații comune
