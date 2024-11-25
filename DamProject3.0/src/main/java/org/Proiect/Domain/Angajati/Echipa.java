@@ -1,6 +1,8 @@
 package org.Proiect.Domain.Angajati;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.Proiect.Domain.Proiect.Proiect;
 
@@ -17,17 +19,20 @@ public class Echipa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int idEchipa;
+    @NotBlank(message = "Denumirea echipei este obligatorie.")
+    @Size(max = 100, message = "Denumirea echipei nu poate depăși 100 de caractere.")
     private String denumire;
 
     @OneToMany(mappedBy = "echipa", cascade = CascadeType.ALL)
-    private List<MembruEchipa> membri;
+    private List<Utilizator> membri;
 
-    @ManyToMany(mappedBy = "echipe")
-    private List<Proiect> proiecte;
+    @ManyToOne
+    @JoinColumn(name = "proiect_id")  // Adăugăm o coloană pentru a lega echipa de proiect
+    private Proiect proiect;
 
     @ManyToOne
     @JoinColumn(name = "id_lider")
-    private LiderEchipa lider;
+    private Utilizator lider;
 
 
 }

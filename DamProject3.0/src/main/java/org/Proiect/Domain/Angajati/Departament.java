@@ -1,6 +1,8 @@
 package org.Proiect.Domain.Angajati;
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -16,15 +18,17 @@ public class Departament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+    @NotBlank(message = "Numele departamentului este obligatoriu.")
+    @Size(max = 100, message = "Numele departamentului nu poate depăși 100 de caractere.")
     private String numeDepartament;
 
 
     @ManyToOne
     @JoinColumn(name = "id_manager_proiect")
-    private ManagerProiect managerProiect;
+    private Utilizator managerProiect;
 
 
     @OneToMany(mappedBy = "departament", cascade = CascadeType.ALL)
-    private List<AppUser> users;
+    private List<Utilizator> angajati;
 
 }

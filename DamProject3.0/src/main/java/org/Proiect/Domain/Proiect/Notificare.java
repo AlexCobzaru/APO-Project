@@ -1,5 +1,5 @@
 package org.Proiect.Domain.Proiect;
-import org.Proiect.Domain.Angajati.AppUser;
+import org.Proiect.Domain.Angajati.Utilizator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class Notificare {
 
     @ManyToOne
     @JoinColumn(name = "id_user")
-    private AppUser user;
+    private Utilizator user;
 
     @ManyToOne
     @JoinColumn(name = "id_task")

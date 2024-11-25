@@ -7,13 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="DAM-Project_Management_App (2)" />
         <module name="DAM_TEAMMANAGEMENT" />
-        <module name="DAM-Project_Management_App" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="DAM-Project_Management_App" target="21" />
       <module name="DAM-Project_Management_App (1)" target="21" />
+      <module name="DAM-Project_Management_App (2)" target="21" />
       <module name="DamProject" target="21" />
     </bytecodeTargetLevel>
   </component>

@@ -1,5 +1,7 @@
 package org.Proiect.Domain.Dezvoltare;
-import org.Proiect.Domain.Angajati.AppUser;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.Proiect.Domain.Angajati.Utilizator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,9 +16,11 @@ public class Curs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+    @NotBlank(message = "Titlul cursului este obligatoriu.")
+    @Size(max = 100, message = "Titlul cursului nu poate depăși 100 de caractere.")
     private String titlu;
     @ManyToMany(mappedBy = "cursuri")
-    private List<AppUser> users;
+    private List<Utilizator> users;
 
     @OneToMany(mappedBy = "curs", cascade = CascadeType.ALL)
     private List<Badge> badges;
