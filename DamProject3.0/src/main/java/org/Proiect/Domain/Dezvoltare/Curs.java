@@ -15,13 +15,17 @@ public class Curs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Long id;
+    private Integer id;
     @NotBlank(message = "Titlul cursului este obligatoriu.")
     @Size(max = 100, message = "Titlul cursului nu poate depăși 100 de caractere.")
     private String titlu;
-    @ManyToMany(mappedBy = "cursuri")
-    private List<Utilizator> users;
-
-    @OneToMany(mappedBy = "curs", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "curs", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UtilizatorCurs> utilizatoriCursuri;
+    @OneToMany(mappedBy = "curs", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Badge> badges;
+    private String descriere;
+    private int durataOre;
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = false)
+    private Utilizator admin;
 }

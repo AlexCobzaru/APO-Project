@@ -85,4 +85,17 @@ public class Utilizator {
     public boolean isDisponibil() {
         return this.disponibil;  // Asumând că atributul disponibil există
     }
+
+    @Override
+    public String toString() {
+        return "Utilizator{" +
+                "userId=" + userId +
+                ", nume='" + nume + '\'' +
+                ", email='" + email + '\'' +
+                ", tipUtilizator=" + tipUtilizator +
+                ", depasiriDeadline=" + depasiriDeadline +
+                ", rol='" + rol + '\'' +
+                ", disponibil=" + disponibil +
+                '}';
+    }
 }

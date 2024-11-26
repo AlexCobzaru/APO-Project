@@ -48,4 +48,16 @@ public class Proiect {
     private List<Raport> rapoarte;
     @OneToMany (mappedBy = "proiect", cascade = CascadeType.ALL)
     private List<Echipa> echipe;
+
+    @Override
+    public String toString() {
+        return "Proiect{" +
+                "id=" + id +
+                ", denumire='" + denumire + '\'' +
+                ", descriere='" + descriere + '\'' +
+                ", status=" + status +
+                ", dataIncepere=" + dataIncepere +
+                ", dataFinalizare=" + dataFinalizare +
+                '}';
+    }
 }

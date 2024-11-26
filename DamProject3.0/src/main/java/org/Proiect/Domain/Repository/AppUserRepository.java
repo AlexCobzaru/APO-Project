@@ -45,6 +45,14 @@ public interface AppUserRepository extends JpaRepository <Utilizator, Integer> {
             @Param("exclusMembruId") Integer exclusMembruId);
     @Query("SELECT u FROM Utilizator u WHERE u.echipa.idEchipa = :echipaId")
     List<Utilizator> findAllByEchipa(@Param("echipaId") Integer echipaId);
+
+    @Query("SELECT u FROM Utilizator u JOIN UtilizatorCurs uc ON uc.utilizator.id = u.id WHERE uc.curs.id = :cursId")
+    List<Utilizator> findUtilizatoriByCursId(@Param("cursId") Integer cursId);
+
+    @Query("SELECT u FROM Utilizator u WHERE u.id NOT IN (SELECT uc.utilizator.id FROM UtilizatorCurs uc WHERE uc.curs.id = :cursId)")
+    List<Utilizator> findUtilizatoriNotInCurs(@Param("cursId") Integer cursId);
+
+
 }
 
 

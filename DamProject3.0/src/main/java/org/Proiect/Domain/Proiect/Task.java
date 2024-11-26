@@ -51,4 +51,19 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<Notificare> notificari;
+
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskUserId=" + taskUserId +
+                ", denumire='" + denumire + '\'' +
+                ", descriere='" + descriere + '\'' +
+                ", dataIncepere=" + dataIncepere +
+                ", dataFinalizare=" + dataFinalizare +
+                ", status=" + status +
+                ", deadline=" + deadline +
+                ", proiect=" + proiect +
+                '}';
+    }
 }

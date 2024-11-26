@@ -37,32 +37,62 @@ private AppUserRepository utilizatorRepository;
     @Test
     public void testAdaugaMembruInEchipa() {
 
-        // Creăm o echipă și adăugăm un membru
-        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", 1);
-        echipaWorkflowService.adaugaMembruInEchipa(echipa.getIdEchipa(), 2);
+        // Creează și salvează liderul
+        Utilizator lider = new Utilizator();
+        lider.setNume("Lider Test");
+        lider.setTipUtilizator(TipUtilizator.LIDER);
+        lider = utilizatorRepository.save(lider); // Asigură-te că liderul are un ID
 
-        // Verificăm că membrul a fost adăugat
+        // Creează echipa
+        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", lider.getUserId());
+
+        // Creează și salvează membrul
+        Utilizator membru = new Utilizator();
+        membru.setNume("Membru Test");
+        membru.setTipUtilizator(TipUtilizator.MEMBRUECHIPA);
+        membru = utilizatorRepository.save(membru);
+
+        // Adaugă membrul în echipă
+        echipaWorkflowService.adaugaMembruInEchipa(echipa.getIdEchipa(), membru.getUserId());
+
+        // Verifică că membrul a fost adăugat
         assertEquals(1, echipaWorkflowService.vizualizeazaMembriiEchipa(echipa.getIdEchipa()).size());
     }
 
     @Test
     public void testModificaEchipa() {
-        // Creăm o echipă și modificăm numele
-        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", 1);
+        // Creează și salvează liderul
+        Utilizator lider = new Utilizator();
+        lider.setNume("Lider Test");
+        lider.setTipUtilizator(TipUtilizator.LIDER);
+        lider = utilizatorRepository.save(lider);
+
+        // Creează echipa
+        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", lider.getUserId());
+
+        // Modifică numele echipei
         echipaWorkflowService.modificaEchipa(echipa.getIdEchipa(), "Echipa Modificata");
 
-        // Verificăm că numele a fost modificat
+        // Verifică că numele a fost modificat
         Echipa echipaModificata = echipaWorkflowService.vizualizeazaEchipa(echipa.getIdEchipa());
         assertEquals("Echipa Modificata", echipaModificata.getDenumire());
     }
 
     @Test
     public void testArhiveazaEchipa() {
-        // Creăm o echipă și o arhivăm
-        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", 1);
+        // Creează și salvează liderul
+        Utilizator lider = new Utilizator();
+        lider.setNume("Lider Test");
+        lider.setTipUtilizator(TipUtilizator.LIDER);
+        lider = utilizatorRepository.save(lider);
+
+        // Creează echipa
+        Echipa echipa = echipaWorkflowService.creeazaEchipa("Echipa Test", lider.getUserId());
+
+        // Arhivează echipa
         echipaWorkflowService.arhiveazaEchipa(echipa.getIdEchipa());
 
-        // Verificăm că echipa este arhivată
+        // Verifică că echipa este arhivată
         Echipa echipaArhivata = echipaWorkflowService.vizualizeazaEchipa(echipa.getIdEchipa());
         assertTrue(echipaArhivata.isArhivata());
     }
