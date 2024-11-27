@@ -29,16 +29,16 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testCreeazaDepartament() {
-        // Arrange
+
         Utilizator manager = new Utilizator();
         manager.setNume("Manager Test");
         manager.setTipUtilizator(TipUtilizator.MANAGER);
         manager = utilizatorRepository.save(manager);
 
-        // Act
+
         Departament departament = departamentWorkflowService.creeazaDepartament("Departament IT", manager.getUserId());
 
-        // Assert
+
         assertNotNull(departament);
         assertEquals("Departament IT", departament.getNumeDepartament());
         assertEquals(manager.getUserId(), departament.getManagerProiect().getUserId());
@@ -46,7 +46,7 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testAdaugaUtilizatorInDepartament() {
-        // Arrange
+
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament HR");
         departament = departamentRepository.save(departament);
@@ -55,10 +55,10 @@ public class TestDepartamentWorkflowService {
         utilizator.setNume("Test User");
         utilizator = utilizatorRepository.save(utilizator);
 
-        // Act
+
         departamentWorkflowService.adaugaUtilizatorInDepartament(departament.getId(), utilizator.getUserId(), "MEMBRU");
 
-        // Assert
+
         Utilizator utilizatorActualizat = utilizatorRepository.findById(utilizator.getUserId()).orElseThrow();
         assertEquals(departament.getId(), utilizatorActualizat.getDepartament().getId());
         assertEquals("MEMBRU", utilizatorActualizat.getRol());
@@ -66,30 +66,30 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testModificaDepartament() {
-        // Arrange
+
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Initial");
         departament = departamentRepository.save(departament);
 
-        // Act
+
         departamentWorkflowService.modificaDepartament(departament.getId(), "Departament Modificat");
 
-        // Assert
+
         Departament departamentActualizat = departamentRepository.findById(departament.getId()).orElseThrow();
         assertEquals("Departament Modificat", departamentActualizat.getNumeDepartament());
     }
 
     @Test
     void testVizualizeazaDepartament() {
-        // Arrange
+
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Marketing");
         departament = departamentRepository.save(departament);
 
-        // Act
+
         Departament departamentVizualizat = departamentWorkflowService.vizualizeazaDepartament(departament.getId());
 
-        // Assert
+
         assertNotNull(departamentVizualizat);
         assertEquals(departament.getId(), departamentVizualizat.getId());
         assertEquals("Departament Marketing", departamentVizualizat.getNumeDepartament());
@@ -97,7 +97,7 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testVizualizeazaMembriiDepartament() {
-        // Arrange
+
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Tehnic");
         departament = departamentRepository.save(departament);
@@ -107,10 +107,10 @@ public class TestDepartamentWorkflowService {
         utilizator.setDepartament(departament);
         utilizator = utilizatorRepository.save(utilizator);
 
-        // Act
+
         List<Utilizator> membri = departamentWorkflowService.vizualizeazaMembriiDepartament(departament.getId());
 
-        // Assert
+
         assertNotNull(membri);
         assertFalse(membri.isEmpty());
         assertEquals(1, membri.size());

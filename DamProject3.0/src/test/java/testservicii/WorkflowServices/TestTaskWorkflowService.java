@@ -41,7 +41,7 @@ public class TestTaskWorkflowService {
 
     @Test
     void testGestioneazaDepasireDeadline() {
-        // Arrange
+
         Echipa echipa = new Echipa();
         echipa.setDenumire("Echipa Test");
         echipa = echipaRepository.save(echipa);
@@ -60,10 +60,10 @@ public class TestTaskWorkflowService {
         task.setMembru(membru);
         task = taskRepository.save(task);
 
-        // Act
+
         taskWorkflowService.gestioneazaDepasireDeadline(task.getTaskUserId());
 
-        // Assert
+
         Task updatedTask = taskRepository.findById(task.getTaskUserId()).orElseThrow();
         assertEquals(task.getTaskUserId(), updatedTask.getTaskUserId());
         assertEquals(membru.getUserId(), updatedTask.getMembru().getUserId()); // Membrul rămâne același
@@ -107,10 +107,9 @@ public class TestTaskWorkflowService {
         task.setProiect(proiect);
         task = taskRepository.save(task);
 
-        // Act
+
         taskWorkflowService.gestioneazaDepasireDeadline(task.getTaskUserId());
 
-        // Assert
         Task updatedTask = taskRepository.findById(task.getTaskUserId()).orElseThrow();
         assertNotEquals(membru.getUserId(), updatedTask.getMembru().getUserId()); // Task-ul a fost reatribuit
         assertEquals(altMembru.getUserId(), updatedTask.getMembru().getUserId()); // Task-ul este acum la alt membru

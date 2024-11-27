@@ -27,39 +27,37 @@ public class TestEntityManager {
     @Test
     @Transactional
     void testEntityManager() {
-        // Verificăm că EntityManager este injectat corect
         assertNotNull(em);
 
-        // Crearea unui Proiect
         Proiect proiect = new Proiect();
         proiect.setDenumire("Proiect Test");
         proiect.setDescriere("Descriere Proiect Test");
-        proiect.setStatus(StatusProiect.IN_PROGRESS);  // Asigură-te că setăm statusul
-        proiect.setDataIncepere(new Date());  // Setăm data de începere
-        em.persist(proiect); // Salvăm proiectul în baza de date
+        proiect.setStatus(StatusProiect.IN_PROGRESS);
+        proiect.setDataIncepere(new Date());
+        em.persist(proiect);
 
-        // Crearea unui Utilizator pentru lider și membru (presupunem că ai o entitate Utilizator)
+
         Utilizator lider = new Utilizator();
         lider.setNume("Lider Test");
-        em.persist(lider);  // Salvăm liderul în baza de date
+        em.persist(lider);
 
         Utilizator membru = new Utilizator();
         membru.setNume("Membru Test");
-        em.persist(membru);  // Salvăm membrul în baza de date
+        em.persist(membru);
 
-        // Crearea unui Task
+
         Task task = new Task();
         task.setDenumire("Task Test");
         task.setDescriere("Descriere task");
         task.setDataIncepere(new Date());
         task.setDataFinalizare(new Date());
-        task.setStatus(Status.IN_EXECUTIE);  // Setăm statusul task-ului
-        task.setDeadline(LocalDate.now().plusDays(2));  // Deadline-ul pentru task
-        task.setProiect(proiect);  // Asociem task-ul cu proiectul
-        task.setLider(lider);  // Setăm liderul task-ului
-        task.setMembru(membru);  // Setăm membrul task-ului
+        task.setStatus(Status.IN_EXECUTIE);
+        task.setDeadline(LocalDate.now().plusDays(2));
+        task.setProiect(proiect);
+        task.setLider(lider);
+        task.setMembru(membru);
 
-        em.persist(task);  // Salvăm task-ul în baza de date
+        em.persist(task);
 
         // Interogarea pentru a obține toate task-urile
         List<Task> taskList = em.createQuery("SELECT t FROM Task t", Task.class)

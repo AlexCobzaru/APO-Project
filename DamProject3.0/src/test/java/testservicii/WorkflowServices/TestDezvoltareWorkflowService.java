@@ -26,27 +26,27 @@ public class TestDezvoltareWorkflowService {
 
     @BeforeEach
     void setUp() {
-        adminId = 1; // Exemplu ID pentru admin
+        adminId = 1;
 
         // Crearea unui utilizator Admin pentru test
         Utilizator admin = new Utilizator();
         admin.setUserId(adminId);
         admin.setTipUtilizator(TipUtilizator.ADMIN);
-        utilizatorRepository.save(admin); // Salvăm utilizatorul în baza de date
+        utilizatorRepository.save(admin);
     }
 
     @Test
     void testCreeazaCurs() {
         String titlu = "Programare Java Avansată";
 
-        // Verificăm dacă utilizatorul Admin a fost salvat corect
+
         Utilizator admin = utilizatorRepository.findById(adminId)
                 .orElseThrow(() -> new IllegalArgumentException("Adminul nu există."));
 
-        // Apelăm serviciul pentru a crea cursul
+
         Curs cursCreat = dezvoltareWorkflowService.creeazaCurs(titlu, adminId);
 
-        // Verificăm rezultatele
+
         assertNotNull(cursCreat, "Cursul creat nu trebuie să fie null");
         assertEquals(titlu, cursCreat.getTitlu(), "Titlul cursului trebuie să fie cel specificat");
         assertNotNull(cursCreat.getId(), "Cursul creat trebuie să aibă un ID generat");

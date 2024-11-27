@@ -21,9 +21,6 @@ public class Departament {
     @NotBlank(message = "Numele departamentului este obligatoriu.")
     @Size(max = 100, message = "Numele departamentului nu poate depăși 100 de caractere.")
     private String numeDepartament;
-
-
-
     @ManyToOne
     @JoinColumn(name = "id_manager_proiect")
     private Utilizator managerProiect;

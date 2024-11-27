@@ -2,10 +2,8 @@ package testservicii.WorkflowServices;
 
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.Angajati.Echipa;
-import org.Proiect.Domain.App.StatusProiect;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Proiect.Proiect;
-import org.Proiect.Domain.Proiect.Raport;
 import org.Proiect.Domain.Proiect.Task;
 import org.Proiect.Domain.Repository.AppUserRepository;
 import org.Proiect.Domain.Repository.EchipaRepository;
@@ -65,13 +63,13 @@ public class TestProiecteWorkflowService {
         Utilizator membru = new Utilizator();
         membru.setNume("Membru Test");
         membru.setTipUtilizator(TipUtilizator.MEMBRUECHIPA);
-        membru = appUserRepository.save(membru);  // Asigură-te că membrul este salvat în baza de date înainte de a-l folosi
+        membru = appUserRepository.save(membru);
 
         // 5. Creare task și asociere membru
         Task task = new Task();
         task.setDenumire("Task Workflow");
-        task.setMembru(membru);  // Asociază membrul salvat la task
-        task = taskRepository.save(task);  // Salvează task-ul
+        task.setMembru(membru);
+        task = taskRepository.save(task);
 
         // 6. Atribuire task membru
         Task taskAtribuit = proiecteWorkflowService.atribuieTaskMembru(task.getTaskUserId(), membru);

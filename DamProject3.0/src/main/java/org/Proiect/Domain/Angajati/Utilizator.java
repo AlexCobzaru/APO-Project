@@ -64,21 +64,15 @@ public class Utilizator {
 
     @OneToMany(mappedBy = "membru", cascade = CascadeType.ALL)
     private List<Task> taskuriMembru;
-
-
-    // Comportamente condiționale
     public boolean esteAdmin() {
         return this.tipUtilizator == TipUtilizator.ADMIN;
     }
-
     public boolean esteMembruEchipa() {
         return this.tipUtilizator == TipUtilizator.MEMBRUECHIPA;
     }
-
     public boolean esteLiderEchipa() {
         return this.tipUtilizator == TipUtilizator.LIDER;
     }
-
     public boolean esteManagerProiect() {
         return this.tipUtilizator == TipUtilizator.MANAGER;
     }

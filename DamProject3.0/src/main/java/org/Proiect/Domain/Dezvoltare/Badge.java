@@ -21,10 +21,7 @@ public class Badge {
     @JoinColumn(name = "id_curs", nullable = false)
     private Curs curs;
 
-    // Opțional: descriere pentru badge
     private String descriere;
-
-    // Exemplu de câmp suplimentar pentru dificultatea badge-ului
     private int dificultate; // 1 = ușor, 5 = foarte greu
 
 }
