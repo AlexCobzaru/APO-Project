@@ -8,11 +8,12 @@ import org.Proiect.Domain.Proiect.Raport;
 import org.Proiect.Domain.Proiect.Task;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IProiecteWorkflowService {
    // Creare proiect
-   Proiect creareProiect(String denumire, String descriere, Utilizator lider, List<Echipa> echipe);
+   Proiect creareProiect(String denumire, String descriere, Utilizator lider, List<Echipa> echipe, Date dataInceput);
 
    // Modificare lider proiect
    Proiect modificaTeamLeader(Integer proiectId, Utilizator nouLider);

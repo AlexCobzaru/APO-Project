@@ -2,6 +2,7 @@ package org.Proiect.Servicii.Implementari;
 
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.Angajati.Echipa;
+import org.Proiect.Domain.App.Status;
 import org.Proiect.Domain.App.StatusProiect;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Proiect.Proiect;
@@ -9,65 +10,77 @@ import org.Proiect.Domain.Proiect.Raport;
 import org.Proiect.Domain.Proiect.Task;
 import org.Proiect.Domain.Repository.AppUserRepository;
 import org.Proiect.Domain.Repository.EchipaRepository;
+import org.Proiect.Servicii.IEchipaFactory;
+import org.Proiect.Servicii.IProiectFactory;
 import org.Proiect.Servicii.IProiecteWorkflowService;
 
 import org.Proiect.Domain.Repository.RepositoryProiect;
 import org.Proiect.Domain.Repository.TaskRepository;
+import org.Proiect.Servicii.ITaskFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class ProiectWorkflowService implements IProiecteWorkflowService {
+    @Autowired
+    private RepositoryProiect proiectRepository;
+    @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
+    private EchipaRepository echipaRepository;
+    @Autowired
+    private AppUserRepository appUserRepository;
+    @Autowired
+    private IProiectFactory proiectFactory;
+    @Autowired
+    private IEchipaFactory echipaFactory;
+    @Autowired
+    private ITaskFactory taskFactory;
 
-    private final RepositoryProiect proiectRepository;
-    private final TaskRepository taskRepository;
-    private  final EchipaRepository echipaRepository;
-    private  final AppUserRepository appUserRepository;
-
-    public ProiectWorkflowService(RepositoryProiect proiectRepository, TaskRepository taskRepository, EchipaRepository echipaRepository, AppUserRepository appUserRepository) {
-        this.proiectRepository = proiectRepository;
-        this.taskRepository = taskRepository;
-        this.echipaRepository=echipaRepository;
-        this.appUserRepository=appUserRepository;
-    }
     @Override
-    @Transactional
-    public Proiect creareProiect(String denumire, String descriere, Utilizator lider, List<Echipa> echipe) {
+    public Proiect creareProiect(String denumire, String descriere, Utilizator lider, List<Echipa> echipe, Date dataInceput) {
         if (!lider.getTipUtilizator().equals(TipUtilizator.LIDER)) {
             throw new IllegalArgumentException("Liderul trebuie să fie de tip LIDER.");
         }
-        Proiect proiect = new Proiect();
-        proiect.setDenumire(denumire);
-        proiect.setDescriere(descriere);
-        proiect.setLider(lider);
-        proiect.setStatus(StatusProiect.IN_PROGRESS);
-        proiect.setDataIncepere(new Date());
 
-        // Verificare și atașare echipe
+        Proiect proiect = proiectFactory.creeazaProiectValidat(denumire, descriere, lider, echipe, dataInceput);
+
+        if (proiect.getStatus() == null) {
+            proiect.setStatus(StatusProiect.CREATED);
+        }
+
         List<Echipa> attachedEchipe = echipe.stream()
                 .map(echipa -> {
                     if (echipa.getIdEchipa() != 0) {
-                        return echipaRepository.findById(echipa.getIdEchipa())
-                                .orElseThrow(() -> new IllegalArgumentException("Echipa nu există: " + echipa.getIdEchipa()));
+                        // Dacă echipa există deja în baza de date, o salvăm folosind merge
+                        return echipaRepository.saveAndFlush(echipa);  // Folosește saveAndFlush sau merge
+                    } else {
+                        // Dacă echipa este nouă, o creăm și o salvăm
+                        Echipa echipaNoua = echipaFactory.creeazaEchipa(echipa.getDenumire(), lider);
+                        return echipaRepository.save(echipaNoua);  // Salvăm echipa nouă
                     }
-                    return echipaRepository.save(echipa); // Salvează echipe noi
                 })
                 .toList();
 
         proiect.setEchipe(attachedEchipe);
-        attachedEchipe.forEach(e -> e.setProiect(proiect)); // Setare relație inversă
+        attachedEchipe.forEach(e -> e.setProiect(proiect));
 
+        // Salvează proiectul
         return proiectRepository.save(proiect);
     }
+
 
     @Override
     public Proiect modificaTeamLeader(Integer proiectId, Utilizator nouLider) {
         if (!nouLider.getTipUtilizator().equals(TipUtilizator.LIDER)) {
             throw new IllegalArgumentException("Liderul trebuie să fie de tip LIDER.");
         }
+
         Proiect proiect = proiectRepository.findById(proiectId)
                 .orElseThrow(() -> new RuntimeException("Proiectul nu a fost găsit!"));
 
@@ -76,20 +89,22 @@ public class ProiectWorkflowService implements IProiecteWorkflowService {
     }
 
     @Override
-    @Transactional
     public Proiect adaugaEchipaLaProiect(Integer proiectId, Echipa echipa) {
         Proiect proiect = proiectRepository.findById(proiectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proiectul nu există: " + proiectId));
+        if (proiect.getEchipe() == null) {
+            proiect.setEchipe(new ArrayList<>());
+        } else if (!(proiect.getEchipe() instanceof ArrayList)) {
+            proiect.setEchipe(new ArrayList<>(proiect.getEchipe()));
+        }
+        Echipa echipaNoua = echipa.getIdEchipa() == 0
+                ? echipaFactory.creeazaEchipa(echipa.getDenumire(), proiect.getLider())
+                : echipaRepository.findById(echipa.getIdEchipa())
+                .orElseThrow(() -> new IllegalArgumentException("Echipa nu există: " + echipa.getIdEchipa()));
 
-        // Atașare sau salvare echipă
-        Echipa echipaManaged = echipa.getIdEchipa() != 0
-                ? echipaRepository.findById(echipa.getIdEchipa())
-                .orElseThrow(() -> new IllegalArgumentException("Echipa nu există: " + echipa.getIdEchipa()))
-                : echipaRepository.save(echipa);
-
-        proiect.getEchipe().add(echipaManaged);
-        echipaManaged.setProiect(proiect); // Setare relație inversă
-
+        echipaNoua = echipaRepository.save(echipaNoua);
+        proiect.getEchipe().add(echipaNoua);
+        echipaNoua.setProiect(proiect);
         return proiectRepository.save(proiect);
     }
     @Override
@@ -97,10 +112,8 @@ public class ProiectWorkflowService implements IProiecteWorkflowService {
     public Task atribuieTaskMembru(Integer taskId, Utilizator membru) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task-ul nu există: " + taskId));
-
         Utilizator membruManaged = appUserRepository.findById(membru.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Utilizatorul nu există: " + membru.getUserId()));
-
         task.setMembru(membruManaged);
         return taskRepository.save(task);
     }
@@ -118,10 +131,8 @@ public class ProiectWorkflowService implements IProiecteWorkflowService {
     public Proiect finalizareProiect(Integer proiectId) {
         Proiect proiect = proiectRepository.findById(proiectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proiectul nu există: " + proiectId));
-
         proiect.setStatus(StatusProiect.COMPLETED);
         proiect.setDataFinalizare(new Date());
-
         return proiectRepository.save(proiect);
     }
 

@@ -9,9 +9,11 @@ import org.Proiect.Domain.Proiect.Task;
 import org.Proiect.Domain.Repository.AppUserRepository;
 import org.Proiect.Domain.Repository.EchipaRepository;
 import org.Proiect.Domain.Repository.TaskRepository;
+import org.Proiect.Servicii.ITaskFactory;
 import org.Proiect.Servicii.ITaskWorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,22 +24,16 @@ import java.util.stream.Collectors;
 @Service
 public class TaskWorkflowService implements ITaskWorkflowService {
     private static final Logger logger = LoggerFactory.getLogger(TaskWorkflowService.class);
-    private final TaskRepository taskRepository;
-    private final AppUserRepository appUserRepository;
-    private final EchipaRepository echipaRepository;
-
-    public TaskWorkflowService(TaskRepository taskRepository, AppUserRepository appUserRepository, EchipaRepository echipaRepository) {
-        this.taskRepository = taskRepository;
-        this.appUserRepository = appUserRepository;
-        this.echipaRepository = echipaRepository;
-    }
+    @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
+    private AppUserRepository appUserRepository;
+    @Autowired
+    private ITaskFactory taskFactory;
 
     @Override
     public Integer creeazaTaskNou(String descriereTask, Date dataLimita) {
-        Task task = new Task();
-        task.setDescriere(descriereTask);
-        task.setDataFinalizare(dataLimita);
-        task.setStatus(Status.NOU);
+        Task task = taskFactory.creeazaTaskValidat(descriereTask, Status.NOU, dataLimita, null);
         Task savedTask = taskRepository.save(task);
         return savedTask.getTaskUserId();
     }
@@ -46,10 +42,9 @@ public class TaskWorkflowService implements ITaskWorkflowService {
     public void asignareTaskMembru(Integer taskId, Integer membruId) {
         Optional<Task> taskOptional = taskRepository.findById(taskId);
         Optional<Utilizator> membruOptional = appUserRepository.findById(membruId);
-
         if (taskOptional.isPresent() && membruOptional.isPresent()) {
             Task task = taskOptional.get();
-            task.setMembru(membruOptional.get());
+            taskFactory.asignareTask(task, membruOptional.get());
             taskRepository.save(task);
         } else {
             throw new IllegalArgumentException("Task sau membru nu a fost găsit!");

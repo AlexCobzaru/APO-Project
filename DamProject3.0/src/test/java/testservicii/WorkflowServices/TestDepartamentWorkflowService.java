@@ -10,6 +10,7 @@ import org.Proiect.SpringBootDomain_AplicatieDAM;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,15 +30,16 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testCreeazaDepartament() {
-
         Utilizator manager = new Utilizator();
         manager.setNume("Manager Test");
+        manager.setEmail("manager@test.com");
         manager.setTipUtilizator(TipUtilizator.MANAGER);
         manager = utilizatorRepository.save(manager);
+        utilizatorRepository.flush();
 
+        assertNotNull(manager.getUserId(), "ID-ul managerului nu a fost generat corect.");
 
         Departament departament = departamentWorkflowService.creeazaDepartament("Departament IT", manager.getUserId());
-
 
         assertNotNull(departament);
         assertEquals("Departament IT", departament.getNumeDepartament());
@@ -45,8 +47,8 @@ public class TestDepartamentWorkflowService {
     }
 
     @Test
+    @Transactional
     void testAdaugaUtilizatorInDepartament() {
-
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament HR");
         departament = departamentRepository.save(departament);
@@ -55,9 +57,11 @@ public class TestDepartamentWorkflowService {
         utilizator.setNume("Test User");
         utilizator = utilizatorRepository.save(utilizator);
 
-
         departamentWorkflowService.adaugaUtilizatorInDepartament(departament.getId(), utilizator.getUserId(), "MEMBRU");
 
+        Departament departamentActualizat = departamentRepository.findById(departament.getId()).orElseThrow();
+        assertNotNull(departamentActualizat.getAngajati(), "Lista de angajați nu trebuie să fie null");
+        assertTrue(departamentActualizat.getAngajati().contains(utilizator), "Departamentul nu conține utilizatorul adăugat");
 
         Utilizator utilizatorActualizat = utilizatorRepository.findById(utilizator.getUserId()).orElseThrow();
         assertEquals(departament.getId(), utilizatorActualizat.getDepartament().getId());
@@ -66,14 +70,11 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testModificaDepartament() {
-
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Initial");
         departament = departamentRepository.save(departament);
 
-
         departamentWorkflowService.modificaDepartament(departament.getId(), "Departament Modificat");
-
 
         Departament departamentActualizat = departamentRepository.findById(departament.getId()).orElseThrow();
         assertEquals("Departament Modificat", departamentActualizat.getNumeDepartament());
@@ -81,14 +82,11 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testVizualizeazaDepartament() {
-
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Marketing");
         departament = departamentRepository.save(departament);
 
-
         Departament departamentVizualizat = departamentWorkflowService.vizualizeazaDepartament(departament.getId());
-
 
         assertNotNull(departamentVizualizat);
         assertEquals(departament.getId(), departamentVizualizat.getId());
@@ -97,7 +95,6 @@ public class TestDepartamentWorkflowService {
 
     @Test
     void testVizualizeazaMembriiDepartament() {
-
         Departament departament = new Departament();
         departament.setNumeDepartament("Departament Tehnic");
         departament = departamentRepository.save(departament);
@@ -107,9 +104,7 @@ public class TestDepartamentWorkflowService {
         utilizator.setDepartament(departament);
         utilizator = utilizatorRepository.save(utilizator);
 
-
         List<Utilizator> membri = departamentWorkflowService.vizualizeazaMembriiDepartament(departament.getId());
-
 
         assertNotNull(membri);
         assertFalse(membri.isEmpty());
