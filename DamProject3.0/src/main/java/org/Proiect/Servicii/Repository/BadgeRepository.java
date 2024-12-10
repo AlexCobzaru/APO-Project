@@ -1,4 +1,4 @@
-package org.Proiect.Domain.Repository;
+package org.Proiect.Servicii.Repository;
 
 import org.Proiect.Domain.Dezvoltare.Badge;
 import org.springframework.data.jpa.repository.JpaRepository;

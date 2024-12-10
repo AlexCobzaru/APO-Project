@@ -3,6 +3,7 @@ package org.Proiect.DTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.Proiect.Domain.App.StatusProiect;
 
 import java.util.Date;
 
@@ -23,6 +24,6 @@ public class ProiectDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dataFinalizare;
 
-    @JsonProperty("lider_id")
+    @JsonProperty("id_user")
     private Integer liderId;
 }

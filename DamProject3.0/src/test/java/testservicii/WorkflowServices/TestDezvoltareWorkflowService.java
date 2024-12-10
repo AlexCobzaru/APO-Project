@@ -3,7 +3,7 @@ package testservicii.WorkflowServices;
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Dezvoltare.Curs;
-import org.Proiect.Domain.Repository.AppUserRepository;
+import org.Proiect.Servicii.Repository.AppUserRepository;
 import org.Proiect.Servicii.IDezvoltareWorkflowService;
 import org.Proiect.SpringBootDomain_AplicatieDAM;
 import org.junit.jupiter.api.BeforeEach;

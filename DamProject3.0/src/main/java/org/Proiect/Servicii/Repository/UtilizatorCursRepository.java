@@ -1,4 +1,4 @@
-package org.Proiect.Domain.Repository;
+package org.Proiect.Servicii.Repository;
 
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.Dezvoltare.UtilizatorCurs;

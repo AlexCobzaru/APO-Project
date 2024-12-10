@@ -2,20 +2,19 @@ package org.Proiect.Servicii.Implementari;
 
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.Angajati.Echipa;
-import org.Proiect.Domain.App.Status;
 import org.Proiect.Domain.App.StatusProiect;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Proiect.Proiect;
 import org.Proiect.Domain.Proiect.Raport;
 import org.Proiect.Domain.Proiect.Task;
-import org.Proiect.Domain.Repository.AppUserRepository;
-import org.Proiect.Domain.Repository.EchipaRepository;
+import org.Proiect.Servicii.Repository.AppUserRepository;
+import org.Proiect.Servicii.Repository.EchipaRepository;
 import org.Proiect.Servicii.IEchipaFactory;
 import org.Proiect.Servicii.IProiectFactory;
 import org.Proiect.Servicii.IProiecteWorkflowService;
 
-import org.Proiect.Domain.Repository.RepositoryProiect;
-import org.Proiect.Domain.Repository.TaskRepository;
+import org.Proiect.Servicii.Repository.RepositoryProiect;
+import org.Proiect.Servicii.Repository.TaskRepository;
 import org.Proiect.Servicii.ITaskFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

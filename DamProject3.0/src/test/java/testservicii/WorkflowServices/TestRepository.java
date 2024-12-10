@@ -8,18 +8,15 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 
-import org.Proiect.Domain.Angajati.Echipa;
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.App.TipUtilizator;
-import org.Proiect.Domain.Repository.AppUserRepository;
-import org.Proiect.Domain.Repository.EchipaRepository;
+import org.Proiect.Servicii.Repository.AppUserRepository;
+import org.Proiect.Servicii.Repository.EchipaRepository;
 import org.Proiect.SpringBootDomain_AplicatieDAM;
-import org.checkerframework.checker.nullness.Opt;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @SpringBootTest(classes = SpringBootDomain_AplicatieDAM.class)

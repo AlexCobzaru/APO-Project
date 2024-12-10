@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.App.StatusProiect;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -43,16 +44,16 @@ public class Proiect {
     private Date dataFinalizare;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     private Utilizator lider;
 
-    @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Raport> rapoarte;
-    @OneToMany (mappedBy = "proiect", cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Echipa> echipe;
 
     @Transient
@@ -96,7 +97,11 @@ public class Proiect {
         dto.setStatus(this.status != null ? this.status.toString() : null);
         dto.setDataIncepere(this.dataIncepere);
         dto.setDataFinalizare(this.dataFinalizare);
-        dto.setLiderId(this.lider != null ? this.lider.getUserId() : null);
+        if (this.lider != null && Hibernate.isInitialized(this.lider)) {
+            dto.setLiderId(this.lider.getUserId());
+        } else {
+            dto.setLiderId(null);
+        }
         return dto;
     }
 

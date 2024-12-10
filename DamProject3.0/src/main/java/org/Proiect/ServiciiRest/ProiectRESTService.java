@@ -3,7 +3,7 @@ package org.Proiect.ServiciiRest;
 import jakarta.annotation.PostConstruct;
 import org.Proiect.DTO.ProiectDTO;
 import org.Proiect.Domain.Proiect.Proiect;
-import org.Proiect.Domain.Repository.RepositoryProiect;
+import org.Proiect.Servicii.Repository.RepositoryProiect;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,8 +99,20 @@ public class ProiectRESTService {
     private void setUpMapper() {
         logger.info("Setting up ModelMapper configurations...");
         TypeMap<Proiect, ProiectDTO> proiectDTOMapper = modelMapper.createTypeMap(Proiect.class, ProiectDTO.class);
+
+        // Mapări explicite pentru fiecare câmp
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getId, ProiectDTO::setId));
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDenumire, ProiectDTO::setDenumire));
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDataIncepere, ProiectDTO::setDataIncepere));
+        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDescriere, ProiectDTO::setDescriere));
+        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getStatus, (destination, value) -> destination.setStatus(value != null ? value.toString() : null)));
+        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDataFinalizare, ProiectDTO::setDataFinalizare));
+
+        // Mapare pentru liderId
+        proiectDTOMapper.addMappings(mapper ->
+                mapper.map(source -> source.getLider() != null ? source.getLider().getUserId() : null, ProiectDTO::setLiderId)
+        );
+
     }
 }
+

@@ -1,4 +1,4 @@
-package org.Proiect.Domain.Repository;
+package org.Proiect.Servicii.Repository;
 import org.Proiect.Domain.App.StatusProiect;
 import org.Proiect.Domain.Proiect.Proiect;
 import org.springframework.data.domain.Page;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-//@Repository
-@RepositoryRestResource
+@Repository
+//@RepositoryRestResource
 public interface RepositoryProiect extends JpaRepository<Proiect, Integer> {
 
    //Găsire proiecte după status

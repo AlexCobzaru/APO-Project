@@ -1,9 +1,11 @@
 package org.Proiect;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 
 import java.util.logging.Logger;
 
@@ -16,5 +18,10 @@ public class SpringBootDomain_AplicatieDAM extends SpringBootServletInitializer
 	public static void main(String[] args) {
 		logger.info("Loading ... :: SpringBoot - AplicatieDAM Default Settings ...  ");
 		SpringApplication.run(SpringBootDomain_AplicatieDAM.class, args);
+	}
+	@Bean
+	public ModelMapper setupModelMapper(){
+		ModelMapper mapper = new ModelMapper();
+		return mapper;
 	}
 }
