@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/rest/servicii/proiecte") // REST.Resource Style
+@RequestMapping("/rest/servicii/proiect") // REST.Resource Style
 @Transactional
 public class ProiectRESTService {
 

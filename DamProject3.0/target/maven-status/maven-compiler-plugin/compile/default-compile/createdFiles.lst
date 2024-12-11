@@ -1,6 +1,9 @@
 org\Proiect\ServiciiRest\ProiectWorkflowControllerREST.class
 org\Proiect\Domain\Angajati\Echipa.class
+org\Proiect\Servicii\Repository\AppUserRepository.class
 org\Proiect\Servicii\Implementari\EchipaWorkflowService.class
+org\Proiect\Servicii\Repository\EchipaRepository.class
+org\Proiect\Servicii\Repository\BadgeRepository.class
 org\Proiect\Domain\Dezvoltare\UtilizatorCurs.class
 org\Proiect\Domain\Dezvoltare\Badge.class
 org\Proiect\Servicii\Implementari\TaskFactory.class
@@ -14,6 +17,7 @@ org\Proiect\Servicii\Implementari\DezvoltareWorkflowService.class
 org\Proiect\DTO\UtilizatorDTO.class
 org\Proiect\Domain\Dezvoltare\Curs.class
 org\Proiect\Servicii\Implementari\EchipaFactory.class
+org\Proiect\Servicii\Repository\RepositoryProiect.class
 org\Proiect\Domain\Proiect\Task.class
 org\Proiect\Servicii\IDepartamentWorkflowService.class
 org\Proiect\Servicii\Implementari\DepartamentFactory.class
@@ -39,7 +43,11 @@ org\Proiect\DTO\UtilizatorCursDTO.class
 org\Proiect\ServiciiRest\DezvoltareController.class
 org\Proiect\DTO\ProiectDTO.class
 org\Proiect\Domain\Proiect\Proiect.class
+org\Proiect\Servicii\Repository\TaskRepository.class
+org\Proiect\Servicii\Repository\UtilizatorCursRepository.class
 org\Proiect\DTO\BadgeDTO.class
 org\Proiect\Servicii\ITaskWorkflowService.class
+org\Proiect\Servicii\Repository\DepartamentRepository.class
 org\Proiect\Domain\Angajati\Utilizator.class
 org\Proiect\Domain\App\Status.class
+org\Proiect\Servicii\Repository\CursRepository.class

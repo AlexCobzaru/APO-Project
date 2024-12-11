@@ -8,5 +8,5 @@ public class BadgeDTO {
     private String titlu;
     private String descriere;
     private int dificultate;
-    private Integer cursId; // ID-ul cursului asociat
+    private Integer cursId;
 }

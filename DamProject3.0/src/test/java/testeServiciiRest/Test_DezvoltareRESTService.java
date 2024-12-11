@@ -17,12 +17,12 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Test_DezvoltareRESTService {
     private static final Logger logger = Logger.getLogger(Test_DezvoltareRESTService.class.getName());
-    private static final String serviceURL = "http://localhost:8083/rest/servicii/dezvoltare";
+    private static final String serviceURL = "http://localhost:8083/team/rest/servicii/dezvoltare";
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Test

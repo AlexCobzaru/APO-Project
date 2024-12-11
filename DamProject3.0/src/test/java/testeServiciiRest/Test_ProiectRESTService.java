@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Test_ProiectRESTService {
     private static final Logger logger = Logger.getLogger(Test_ProiectRESTService.class.getName());
-    private static final String serviceURL = "http://localhost:8083/team/rest/servicii/proiecte";
+    private static final String serviceURL = "http://localhost:8083/team/rest/servicii/proiect";
     private final RestTemplate restTemplate = new RestTemplate();
     @Test
     @Order(1)
@@ -128,10 +128,5 @@ public class Test_ProiectRESTService {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }
-
-
-
-
-
 
 }

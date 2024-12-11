@@ -42,15 +42,13 @@ public class Test_ProiectWorkflowREST {
                 new ParameterizedTypeReference<List<ProiectDTO>>() {}
         ).getBody();
 
-        // Verifică dacă sunt proiecte
         if (proiecte == null || proiecte.isEmpty()) {
-            logger.warning("No projects found!");  // Mesaj de log pentru cazurile în care nu sunt proiecte
-            // Nu întrerupe testul, doar loghează avertismentul
-            assertTrue(true);  // Testul continuă fără a opri
+            logger.warning("No projects found!");
+            assertTrue(true);
         } else {
-            // Dacă există proiecte, le loghezi
+
             proiecte.forEach(p -> logger.info("Proiect: " + p));
-            // Poți să ai și alte aserțiuni, în funcție de ce vrei să verifici.
+
             assertTrue(true); // Sau orice altă aserțiune care are sens pentru testul tău
         }
     }

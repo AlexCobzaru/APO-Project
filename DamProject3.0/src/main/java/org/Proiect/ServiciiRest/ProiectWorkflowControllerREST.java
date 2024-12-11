@@ -12,20 +12,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/rest/servicii/proiecteWorkflow")  // API endpoint pentru proiecte
+@RequestMapping("/rest/servicii/proiecteWorkflow")
 public class ProiectWorkflowControllerREST {
 
     @Autowired
     private IProiecteWorkflowService proiectWorkflowService;
 
-    // Endpoint pentru crearea unui proiect
     @PostMapping
     public ResponseEntity<ProiectDTO> creareProiect(@RequestBody ProiectDTO proiectDTO) {
         Proiect proiect = new Proiect();
         proiect.setDenumire(proiectDTO.getDenumire());
         proiect.setDescriere(proiectDTO.getDescriere());
-        // presupun că liderul este deja gestionat într-un mod corespunzător
-        // proiect.setLider(lider);
         proiect.setDataIncepere(proiectDTO.getDataIncepere());
 
         Proiect proiectCreat = proiectWorkflowService.creareProiect(
