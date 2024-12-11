@@ -22,6 +22,10 @@ public class SpringBootDomain_AplicatieDAM extends SpringBootServletInitializer
 	@Bean
 	public ModelMapper setupModelMapper(){
 		ModelMapper mapper = new ModelMapper();
+		mapper.getConfiguration()
+				.setFieldMatchingEnabled(true)
+				.setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+				.setSkipNullEnabled(true);
 		return mapper;
 	}
 }

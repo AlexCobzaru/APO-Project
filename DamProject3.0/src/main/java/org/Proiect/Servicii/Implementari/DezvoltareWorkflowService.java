@@ -130,4 +130,9 @@ public class DezvoltareWorkflowService implements IDezvoltareWorkflowService {
         badge.setCurs(utilizatorCurs.getCurs());
         return badgeRepository.save(badge);
     }
-}
+
+    @Override
+    public List<Badge> getAllBadges() {
+        return badgeRepository.findAll();
+    }
+    }

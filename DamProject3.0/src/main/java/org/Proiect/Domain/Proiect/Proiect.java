@@ -1,4 +1,5 @@
 package org.Proiect.Domain.Proiect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +21,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@JsonIgnoreProperties({"tasks", "echipe", "rapoarte", "hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Proiect {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,7 @@ public class Proiect {
 
     @NotBlank(message = "Denumirea proiectului este obligatorie.")
     @Size(max = 100, message = "Denumirea proiectului nu poate depăși 100 de caractere.")
- private String denumire;
+    private String denumire;
 
     @Size(max = 255, message = "Descrierea proiectului nu poate depăși 255 de caractere.")
     private String descriere;
@@ -53,40 +54,14 @@ public class Proiect {
 
     @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Raport> rapoarte;
-    @OneToMany (mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "proiect", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Echipa> echipe;
 
+    @JsonIgnore
     @Transient
     private int taskCount;
 
-    @Override
-    public String toString() {
-        return "Proiect{" +
-                "id=" + id +
-                ", denumire='" + denumire + '\'' +
-                ", descriere='" + descriere + '\'' +
-                ", status=" + status +
-                ", dataIncepere=" + dataIncepere +
-                ", dataFinalizare=" + dataFinalizare +
-                '}';
-    }
-
-    @PrePersist
-    public void onPrePersist() {
-        System.out.println(">>> JPA Trigger: @PrePersist - Salvare entitate nouă.");
-        this.taskCount = (this.tasks == null) ? 0 : this.tasks.size();
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        System.out.println(">>> JPA Trigger: @PreUpdate - Actualizare entitate.");
-        this.taskCount = (this.tasks == null) ? 0 : this.tasks.size();
-    }
-
-    @PreRemove
-    public void onPreRemove() {
-        System.out.println(">>> JPA Trigger: @PreRemove - Ștergere entitate.");
-    }
 
     // === Mapper: Proiect -> ProiectDTO ===
     public ProiectDTO toDTO() {
@@ -97,15 +72,10 @@ public class Proiect {
         dto.setStatus(this.status != null ? this.status.toString() : null);
         dto.setDataIncepere(this.dataIncepere);
         dto.setDataFinalizare(this.dataFinalizare);
-        if (this.lider != null && Hibernate.isInitialized(this.lider)) {
-            dto.setLiderId(this.lider.getUserId());
-        } else {
-            dto.setLiderId(null);
-        }
         return dto;
     }
 
-    // === Mapper: ProiectDTO -> Proiect ===
+
     public static Proiect fromDTO(ProiectDTO dto) {
         Proiect proiect = new Proiect();
         proiect.setId(dto.getId());

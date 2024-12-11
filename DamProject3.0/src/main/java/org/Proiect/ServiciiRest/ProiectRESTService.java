@@ -100,19 +100,16 @@ public class ProiectRESTService {
         logger.info("Setting up ModelMapper configurations...");
         TypeMap<Proiect, ProiectDTO> proiectDTOMapper = modelMapper.createTypeMap(Proiect.class, ProiectDTO.class);
 
-        // Mapări explicite pentru fiecare câmp
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getId, ProiectDTO::setId));
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDenumire, ProiectDTO::setDenumire));
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDataIncepere, ProiectDTO::setDataIncepere));
         proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDescriere, ProiectDTO::setDescriere));
-        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getStatus, (destination, value) -> destination.setStatus(value != null ? value.toString() : null)));
-        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDataFinalizare, ProiectDTO::setDataFinalizare));
 
-        // Mapare pentru liderId
+        // Verifică dacă statusul este enum și convertește în String
         proiectDTOMapper.addMappings(mapper ->
-                mapper.map(source -> source.getLider() != null ? source.getLider().getUserId() : null, ProiectDTO::setLiderId)
+                mapper.map(proiect -> proiect.getStatus() != null ? proiect.getStatus().toString() : null, ProiectDTO::setStatus)
         );
-
+        proiectDTOMapper.addMappings(mapper -> mapper.map(Proiect::getDataFinalizare, ProiectDTO::setDataFinalizare));
     }
-}
 
+}

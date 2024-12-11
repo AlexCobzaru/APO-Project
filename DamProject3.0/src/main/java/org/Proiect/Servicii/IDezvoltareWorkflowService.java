@@ -28,5 +28,7 @@ public interface IDezvoltareWorkflowService {
 
     // Sistemul generează un badge la finalizarea unui curs
     Badge genereazaBadgePentruCurs(Integer cursId, Integer utilizatorId);
+    // Obținerea tuturor badge-urilor
+    List<Badge> getAllBadges();
 
 }
