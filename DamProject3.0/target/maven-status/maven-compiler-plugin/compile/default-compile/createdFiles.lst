@@ -11,6 +11,7 @@ org\Proiect\Servicii\IProiectFactory.class
 org\Proiect\Domain\App\StatusProiect.class
 org\Proiect\Servicii\IDepartamentFactory.class
 org\Proiect\Servicii\ITaskFactory.class
+org\Proiect\DataInitializer.class
 org\Proiect\Servicii\Implementari\DepartamentWorkflowService.class
 org\Proiect\Servicii\IProiecteWorkflowService.class
 org\Proiect\Servicii\Implementari\DezvoltareWorkflowService.class

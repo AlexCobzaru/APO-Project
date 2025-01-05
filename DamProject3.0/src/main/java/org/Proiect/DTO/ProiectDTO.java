@@ -13,8 +13,12 @@ public class ProiectDTO {
     private String denumire;
     private String descriere;
     private String status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dataIncepere;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dataFinalizare;
+
 
     private UtilizatorDTO lider;
 }

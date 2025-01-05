@@ -37,7 +37,7 @@ public class Proiect {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusProiect status;
+    private StatusProiect status = StatusProiect.CREATED;
 
     @Column(nullable = false)
     private Date dataIncepere;

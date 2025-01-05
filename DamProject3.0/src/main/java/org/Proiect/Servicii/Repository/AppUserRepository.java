@@ -22,13 +22,13 @@ public interface AppUserRepository extends JpaRepository <Utilizator, Integer> {
     // Găsire utilizator după email
     Optional<Utilizator> findByEmail(String email);
 
-    // Filtrare utilizatori pe bază de tipUtilizator
     @Query("SELECT u FROM Utilizator u WHERE u.tipUtilizator = :tipUtilizator")
-    List<Utilizator> findByTipUtilizator(@Param("tipUtilizator") TipUtilizator tipUtilizator);
+    List<Utilizator> findAllByTipUtilizator(@Param("tipUtilizator") TipUtilizator tipUtilizator);
 
-    // Găsire lideri după numele echipei liderate
-    @Query("SELECT u FROM Utilizator u JOIN Echipa e ON e.lider.id = u.id WHERE u.tipUtilizator = 'LIDER' AND e.denumire LIKE %:denumireEchipa%")
+
+    @Query("SELECT u FROM Utilizator u JOIN Echipa e ON e.lider.id = u.id WHERE e.denumire LIKE %:denumireEchipa%")
     List<Utilizator> findLideriByEchipaDenumire(@Param("denumireEchipa") String denumireEchipa);
+
 
     // Găsire membri după echipă
     @Query("SELECT u FROM Utilizator u JOIN Echipa e ON u MEMBER OF e.membri WHERE u.tipUtilizator = 'MEMBRU_ECHIPA' AND e.idEchipa = :echipaId")

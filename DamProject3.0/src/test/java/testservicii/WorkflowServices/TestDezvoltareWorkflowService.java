@@ -37,6 +37,10 @@ public class TestDezvoltareWorkflowService {
 
     @Test
     void testCreeazaCurs() {
+        Utilizator admin1 = new Utilizator();
+        admin1.setUserId(adminId);
+        admin1.setTipUtilizator(TipUtilizator.ADMIN);
+        utilizatorRepository.save(admin1);
         String titlu = "Programare Java Avansată";
 
 

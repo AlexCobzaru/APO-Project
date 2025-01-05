@@ -57,7 +57,7 @@ public class ProiectWorkflowService implements IProiecteWorkflowService {
                 .map(echipa -> {
                     if (echipa.getIdEchipa() != 0) {
                         // Dacă echipa există deja în baza de date, o salvăm folosind merge
-                        return echipaRepository.saveAndFlush(echipa);  // Folosește saveAndFlush sau merge
+                        return echipaRepository.saveAndFlush(echipa);
                     } else {
                         // Dacă echipa este nouă, o creăm și o salvăm
                         Echipa echipaNoua = echipaFactory.creeazaEchipa(echipa.getDenumire(), lider);

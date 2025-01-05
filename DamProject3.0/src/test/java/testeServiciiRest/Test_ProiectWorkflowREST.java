@@ -49,7 +49,7 @@ public class Test_ProiectWorkflowREST {
 
             proiecte.forEach(p -> logger.info("Proiect: " + p));
 
-            assertTrue(true); // Sau orice altă aserțiune care are sens pentru testul tău
+            assertTrue(true);
         }
     }
 
@@ -66,17 +66,13 @@ public class Test_ProiectWorkflowREST {
         proiectDTO.setStatus("IN_PROGRESS");
         proiectDTO.setDataIncepere(new Date());
 
-        // Adăugăm un lider dacă este disponibil, altfel lăsăm null
-        UtilizatorDTO liderDTO = null; // liderul poate fi null la început
-        if (liderDTO != null && liderDTO.getUserId() > 0) {
-            liderDTO = new UtilizatorDTO();
-            liderDTO.setUserId(1);  // Setează ID-ul utilizatorului care va fi lider
-            liderDTO.setNume("Lider Test");
-            liderDTO.setTipUtilizator("MANAGER");  // Tipul utilizatorului, poate fi 'MANAGER', 'ADMIN', etc.
-        }
+        UtilizatorDTO liderDTO = new UtilizatorDTO();
+        liderDTO.setUserId(1);
+        liderDTO.setNume("Lider Test");
+        liderDTO.setTipUtilizator("MANAGER");
 
-        // Setează liderul în proiect (poate fi null)
         proiectDTO.setLider(liderDTO);
+
 
         ProiectDTO createdProject = restTemplate.exchange(
                 serviceURL,
@@ -85,14 +81,13 @@ public class Test_ProiectWorkflowREST {
                 ProiectDTO.class
         ).getBody();
 
+
         assertTrue(createdProject != null, "Failed to create project!");
         logger.info("Created project: " + createdProject);
 
-        // Dacă liderul a fost setat, verifică-l
+
         if (liderDTO != null) {
             assertEquals(liderDTO.getUserId(), createdProject.getLider().getUserId(), "Liderul nu a fost setat corect.");
-        } else {
-            logger.info("Liderul nu a fost setat, dar proiectul a fost creat.");
         }
     }
 
@@ -104,7 +99,7 @@ public class Test_ProiectWorkflowREST {
 
         HttpHeaders headers = generateHeaders();
 
-        // Get all projects to find a project to update
+
         List<ProiectDTO> proiecte = restTemplate.exchange(
                 serviceURL,
                 HttpMethod.GET,
@@ -135,7 +130,7 @@ public class Test_ProiectWorkflowREST {
 
         HttpHeaders headers = generateHeaders();
 
-        // Get all projects to find a project to add a team to
+
         List<ProiectDTO> proiecte = restTemplate.exchange(
                 serviceURL,
                 HttpMethod.GET,
@@ -145,10 +140,10 @@ public class Test_ProiectWorkflowREST {
 
         if (!proiecte.isEmpty()) {
             ProiectDTO proiectDTO = proiecte.get(0);
-            // Presupunem că avem un endpoint pentru adăugarea unei echipe
+
             String teamURL = serviceURL + "/" + proiectDTO.getId() + "/echipe";
 
-            // Creează un obiect de echipă (presupunem că trebuie să adăugăm o echipă JSON)
+
             String echipaJson = "{\"denumire\": \"Echipa Test\"}";
 
             restTemplate.exchange(
@@ -168,7 +163,6 @@ public class Test_ProiectWorkflowREST {
 
         HttpHeaders headers = generateHeaders();
 
-        // Get all projects to find a project to update leader
         List<ProiectDTO> proiecte = restTemplate.exchange(
                 serviceURL,
                 HttpMethod.GET,
@@ -178,10 +172,10 @@ public class Test_ProiectWorkflowREST {
 
         if (!proiecte.isEmpty()) {
             ProiectDTO proiectDTO = proiecte.get(0);
-            // Presupunem că avem un endpoint pentru schimbarea liderului
+
             String leaderURL = serviceURL + "/" + proiectDTO.getId() + "/leader";
 
-            String leaderJson = "{\"id\": 2}"; // Exemplu de ID al unui utilizator care devine lider
+            String leaderJson = "{\"id\": 2}";
 
             ProiectDTO updatedProject = restTemplate.exchange(
                     leaderURL,
@@ -218,7 +212,6 @@ public class Test_ProiectWorkflowREST {
             );
         }
 
-        // Verificăm că toate proiectele au fost șterse
         proiecte = restTemplate.exchange(
                 serviceURL,
                 HttpMethod.GET,
