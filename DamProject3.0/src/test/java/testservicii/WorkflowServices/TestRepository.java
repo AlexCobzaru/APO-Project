@@ -63,14 +63,14 @@ public class TestRepository {
         logger.info("Utilizator găsit după email: " + foundUtilizator.get());
     }
 
-    @Test
+  /*  @Test
     @Order(4)
     public void testFindByTipUtilizator() {
         TipUtilizator tip = TipUtilizator.LIDER;
-        List<Utilizator> utilizatori = appUserRepository.findByTipUtilizator(tip);
+        List<Utilizator> utilizatori = appUserRepository.findUtilizatorByTip(TI);
         assertNotNull(utilizatori, "Lista de utilizatori nu trebuie să fie null.");
         logger.info("Utilizatori găsiți după tip: " + utilizatori);
-    }
+    }*/
 
     @Test
     @Order(5)

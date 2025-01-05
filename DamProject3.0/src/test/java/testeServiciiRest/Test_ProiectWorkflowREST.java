@@ -69,7 +69,7 @@ public class Test_ProiectWorkflowREST {
         UtilizatorDTO liderDTO = new UtilizatorDTO();
         liderDTO.setUserId(1);
         liderDTO.setNume("Lider Test");
-        liderDTO.setTipUtilizator("MANAGER");
+        liderDTO.setTipUtilizator(TipUtilizator.LIDER);
 
         proiectDTO.setLider(liderDTO);
 
