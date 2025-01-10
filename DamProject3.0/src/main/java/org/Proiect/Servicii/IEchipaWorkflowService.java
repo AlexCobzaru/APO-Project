@@ -12,4 +12,6 @@ public interface IEchipaWorkflowService {
     void arhiveazaEchipa(Integer  echipaId);
     Echipa vizualizeazaEchipa(Integer  echipaId);
     List<Utilizator> vizualizeazaMembriiEchipa(Integer  echipaId);
+    List<Echipa> getAllEchipe(); // Noua metodă adăugată
+
 }

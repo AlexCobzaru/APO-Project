@@ -74,4 +74,8 @@ public class DepartamentWorkflowService implements IDepartamentWorkflowService {
                 .orElseThrow(() -> new IllegalArgumentException("Departamentul nu există"));
         return utilizatorRepository.findByDepartamentId(departamentId);
     }
+    @Override
+    public List<Departament> getAllDepartamente() {
+        return departamentRepository.findAll();
+    }
 }

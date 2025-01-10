@@ -101,4 +101,9 @@ public class EchipaWorkflowService implements IEchipaWorkflowService {
         // Obținem membrii echipei
         return utilizatorRepository.findAllByEchipa(echipaId);
     }
+    @Override
+    public List<Echipa> getAllEchipe() {
+        // Implementare pentru a returna toate departamentele
+        return echipaRepository.findAll();
+    }
 }
