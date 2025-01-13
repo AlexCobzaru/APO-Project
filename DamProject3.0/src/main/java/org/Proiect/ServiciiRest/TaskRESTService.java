@@ -18,22 +18,21 @@ public class TaskRESTService {
         this.taskWorkflowService = taskWorkflowService;
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TaskDTO> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
+        System.out.println("Task primit: " + taskDTO);
+        Integer taskId = taskWorkflowService.creeazaTaskNou(taskDTO.getDescriere(), null);
+        taskDTO.setIdTask(taskId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskDTO);
+    }
+
+
     // Endpoint pentru a obține toate task-urile
     @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         List<TaskDTO> tasks = taskWorkflowService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
-
-
-    // Endpoint pentru a crea un task nou
-    @PostMapping(value = "/taskuri", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
-        Integer taskId = taskWorkflowService.creeazaTaskNou(taskDTO.getDescriere(), null);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("{\"message\":\"Task creat cu ID-ul: " + taskId + "\"}");
-    }
-
 
     // Endpoint pentru a asigna un task unui membru
     @PostMapping("/{taskId}/assign/{membruId}")
