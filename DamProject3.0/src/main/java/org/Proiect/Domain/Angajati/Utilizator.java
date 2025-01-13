@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.Proiect.DTO.UtilizatorDTO;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Proiect.Notificare;
 import org.Proiect.Domain.Dezvoltare.Curs;
@@ -92,4 +93,23 @@ public class Utilizator {
                 ", disponibil=" + disponibil +
                 '}';
     }
+
+    public UtilizatorDTO toDTO() {
+        UtilizatorDTO dto = new UtilizatorDTO();
+        dto.setUserId(this.userId);
+        dto.setNume(this.nume);
+        dto.setTipUtilizator(this.tipUtilizator);
+        dto.setEmail(this.email);
+        return dto;
+    }
+
+    public static Utilizator fromDTO(UtilizatorDTO dto) {
+        Utilizator utilizator = new Utilizator();
+        utilizator.setUserId(dto.getUserId());
+        utilizator.setNume(dto.getNume());
+        utilizator.setTipUtilizator(dto.getTipUtilizator());
+        utilizator.setEmail(dto.getEmail());
+        return utilizator;
+    }
+
 }

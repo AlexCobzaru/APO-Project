@@ -1,97 +1,131 @@
 package org.Proiect.ServiciiRest;
 
+import jakarta.annotation.PostConstruct;
 import org.Proiect.DTO.TaskDTO;
-import org.Proiect.Servicii.ITaskWorkflowService;
+
+
+import org.Proiect.Domain.Proiect.Task;
+import org.Proiect.Servicii.Repository.TaskRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rest/servicii/taskuri")
+@Transactional
 public class TaskRESTService {
-    private final ITaskWorkflowService taskWorkflowService;
 
-    public TaskRESTService (ITaskWorkflowService taskWorkflowService) {
-        this.taskWorkflowService = taskWorkflowService;
-    }
+    private static final Logger logger = Logger.getLogger(TaskRESTService.class.getName());
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TaskDTO> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
-        System.out.println("Task primit: " + taskDTO);
-        Integer taskId = taskWorkflowService.creeazaTaskNou(taskDTO.getDescriere(), null);
-        taskDTO.setIdTask(taskId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskDTO);
-    }
+    @Autowired
+    private TaskRepository taskRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
-    // Endpoint pentru a obține toate task-urile
-    @GetMapping
+    // === GET: Toate task-urile ===
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
-        List<TaskDTO> tasks = taskWorkflowService.getAllTasks();
-        return ResponseEntity.ok(tasks);
+        logger.info("Fetching all tasks...");
+        List<Task> tasks = taskRepository.findAll();
+        List<TaskDTO> taskDTOs = tasks.stream()
+                .map(task -> modelMapper.map(task, TaskDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskDTOs);
     }
 
-    // Endpoint pentru a asigna un task unui membru
-    @PostMapping("/{taskId}/assign/{membruId}")
-    public ResponseEntity<Void> asignareTaskMembru(
+    // === GET: Task după ID ===
+    @GetMapping(value = "/{taskId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Integer taskId) {
+        logger.info("Fetching task with ID: " + taskId);
+        return taskRepository.findById(taskId)
+                .map(task -> ResponseEntity.ok(modelMapper.map(task, TaskDTO.class)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // === POST: Creare task ===
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<TaskDTO> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
+        logger.info("Creating a new task: " + taskDTO);
+        Task task = modelMapper.map(taskDTO, Task.class);
+        Task savedTask = taskRepository.save(task);
+        TaskDTO savedTaskDTO = modelMapper.map(savedTask, TaskDTO.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTaskDTO);
+    }
+
+    // === PUT: Actualizare task ===
+    @PutMapping(value = "/{taskId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<TaskDTO> modificareTask(
             @PathVariable Integer taskId,
-            @PathVariable Integer membruId
-    ) {
-        taskWorkflowService.asignareTaskMembru(taskId, membruId);
-        return ResponseEntity.ok().build();
+            @RequestBody TaskDTO taskDTO) {
+        logger.info("Updating task with ID: " + taskId);
+        return taskRepository.findById(taskId)
+                .map(existingTask -> {
+                    Task updatedTask = modelMapper.map(taskDTO, Task.class);
+                    updatedTask.setTaskUserId(existingTask.getTaskUserId());
+                    Task savedTask = taskRepository.save(updatedTask);
+                    TaskDTO savedTaskDTO = modelMapper.map(savedTask, TaskDTO.class);
+                    return ResponseEntity.ok(savedTaskDTO);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Endpoint pentru a modifica un task
-    @PutMapping("/{taskId}")
-    public ResponseEntity<Void> modificareTask(
-            @PathVariable Integer taskId,
-            @RequestBody String descriereNoua
-    ) {
-        taskWorkflowService.modificareTask(taskId, descriereNoua);
-        return ResponseEntity.ok().build();
-    }
-
-    // Endpoint pentru a șterge un task
-    @DeleteMapping("/{taskId}")
+    // === DELETE: Ștergere task ===
+    @DeleteMapping(value = "/{taskId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Void> stergereTask(@PathVariable Integer taskId) {
-        taskWorkflowService.stergereTask(taskId);
-        return ResponseEntity.noContent().build();
+        logger.info("Deleting task with ID: " + taskId);
+        if (taskRepository.existsById(taskId)) {
+            taskRepository.deleteById(taskId);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    // Endpoint pentru a vizualiza un task
-    @GetMapping("/{taskId}")
-    public ResponseEntity<String> vizualizareTask(@PathVariable Integer taskId) {
-        String taskDetails = taskWorkflowService.vizualizareTask(taskId);
-        return ResponseEntity.ok(taskDetails);
-    }
-
-    // Endpoint pentru a schimba statusul unui task
-    @PutMapping("/{taskId}/status")
-    public ResponseEntity<Void> schimbareStatusTask(
-            @PathVariable Integer taskId,
-            @RequestBody String statusNou
-    ) {
-        taskWorkflowService.schimbareStatusTask(taskId, statusNou);
-        return ResponseEntity.ok().build();
-    }
-
-    // Endpoint pentru a gestiona notificările la finalizarea task-urilor
-    @PostMapping("/{taskId}/notify-leader")
+    // === POST: Notificare lider pentru finalizarea taskului ===
+    @PostMapping(value = "/{taskId}/notify-leader", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Void> trimiteNotificareLider(@PathVariable Integer taskId) {
-        taskWorkflowService.trimiteNotificareLider(taskId);
+        logger.info("Sending notification for task ID: " + taskId);
+        // Logica notificării (de implementat)
         return ResponseEntity.ok().build();
+    }
+    @PostConstruct
+    private void setUpMapper() {
+        logger.info("Setting up ModelMapper configurations...");
+
+        // Configurare mapare pentru Task -> TaskDTO
+        TypeMap<Task, TaskDTO> taskDTOMapper = modelMapper.createTypeMap(Task.class, TaskDTO.class);
+        taskDTOMapper.addMappings(mapper -> mapper.map(Task::getTaskUserId, TaskDTO::setIdTask));
+        taskDTOMapper.addMappings(mapper -> mapper.map(Task::getDescriere, TaskDTO::setDescriere));
+        taskDTOMapper.addMappings(mapper -> mapper.map(Task::getStatus, TaskDTO::setStatus));
+        taskDTOMapper.addMappings(mapper -> mapper.map(Task::getDeadline, TaskDTO::setDeadline));
+
+        // Configurare mapare pentru TaskDTO -> Task
+        TypeMap<TaskDTO, Task> taskMapper = modelMapper.createTypeMap(TaskDTO.class, Task.class);
+        taskMapper.addMappings(mapper -> mapper.map(TaskDTO::getIdTask, Task::setTaskUserId));
+        taskMapper.addMappings(mapper -> mapper.map(TaskDTO::getDescriere, Task::setDescriere));
+        taskMapper.addMappings(mapper -> mapper.map(TaskDTO::getStatus, Task::setStatus));
+        taskMapper.addMappings(mapper -> mapper.map(TaskDTO::getDeadline, Task::setDeadline));
+
+        // Convertor personalizat pentru LocalDate
+        modelMapper.addConverter(ctx -> ctx.getSource() == null ? null : LocalDate.parse(ctx.getSource()),
+                String.class, LocalDate.class);
+
+        modelMapper.addConverter(ctx -> ctx.getSource() == null ? null : ctx.getSource().toString(),
+                LocalDate.class, String.class);
     }
 
-    // Endpoint pentru valorificarea unui task (exemplu extra)
-    @PostMapping("/{taskId}/valorifica/{membruId}")
-    public ResponseEntity<Void> valorificaTask(
-            @PathVariable Integer taskId,
-            @PathVariable Integer membruId
-    ) {
-        taskWorkflowService.valorificaTask(taskId, membruId);
-        return ResponseEntity.ok().build();
-    }
+
 }
