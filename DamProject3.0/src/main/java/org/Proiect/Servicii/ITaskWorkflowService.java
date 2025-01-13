@@ -1,6 +1,9 @@
 package org.Proiect.Servicii;
 
+import org.Proiect.DTO.TaskDTO;
+
 import java.util.Date;
+import java.util.List;
 
 public interface ITaskWorkflowService {
 
@@ -39,5 +42,7 @@ public interface ITaskWorkflowService {
 
     // Sistemul reatribuie un task altui membru dacă deadline-ul este depășit
     void reatribuireTask(Integer taskId, Integer membruIdNou);
+    List<TaskDTO> getAllTasks();
+
 }
 

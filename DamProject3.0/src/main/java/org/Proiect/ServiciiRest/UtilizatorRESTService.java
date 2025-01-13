@@ -52,7 +52,7 @@ public class UtilizatorRESTService {
 
     // === GET: Utilizator după ID ===
 
-    @GetMapping(value = "/id", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UtilizatorDTO> getUtilizatorById(@PathVariable int id) {
         logger.info("Fetching user with ID: " + id);
         return utilizatorRepository.findById(id)
@@ -60,4 +60,16 @@ public class UtilizatorRESTService {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping(value = "/membri", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UtilizatorDTO> getAllMembriEchipa() {
+        logger.info("Fetching all team members...");
+        return utilizatorRepository.findAllByTipUtilizator(TipUtilizator.MEMBRUECHIPA).stream()
+                .map(utilizator -> modelMapper.map(utilizator, UtilizatorDTO.class))
+                .collect(Collectors.toList());
+    }
+
+
+
+
 }

@@ -1,6 +1,8 @@
 package org.Proiect.Servicii.Implementari;
 
 
+import org.Proiect.DTO.TaskDTO;
+import org.Proiect.DTO.UtilizatorDTO;
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.App.Status;
 import org.Proiect.Domain.App.TipUtilizator;
@@ -176,6 +178,27 @@ public class TaskWorkflowService implements ITaskWorkflowService {
             throw new IllegalArgumentException("Task-ul nu a fost găsit!");
         }
     }
+
+    @Override
+    public List<TaskDTO> getAllTasks() {
+        return taskRepository.findAll().stream()
+                .map(task -> new TaskDTO(
+                        task.getTaskUserId(),
+                        task.getDenumire(),
+                        task.getDescriere(),
+                        task.getStatus(),
+                        task.getDeadline(),
+                        mapToDTO(task.getMembru())
+                ))
+                .collect(Collectors.toList());
+    }
+    private UtilizatorDTO mapToDTO(Utilizator utilizator) {
+        if (utilizator == null) {
+            return null;
+        }
+        return new UtilizatorDTO();
+    }
+
 
     private Integer gasesteAltMembru(Integer proiectId, Integer exclusMembruId) {
         List<Utilizator> membri = appUserRepository.findMembriByEchipaId(proiectId);

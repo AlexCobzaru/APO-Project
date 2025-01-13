@@ -3,8 +3,11 @@ package org.Proiect.ServiciiRest;
 import org.Proiect.DTO.TaskDTO;
 import org.Proiect.Servicii.ITaskWorkflowService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest/servicii/taskuri")
@@ -15,12 +18,22 @@ public class TaskRESTService {
         this.taskWorkflowService = taskWorkflowService;
     }
 
-    // Endpoint pentru a crea un task nou
-    @PostMapping
-    public ResponseEntity<String> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
-        Integer taskId = taskWorkflowService.creeazaTaskNou(taskDTO.getDescriere(), null); // adaugă logică pentru deadline dacă e nevoie
-        return ResponseEntity.status(HttpStatus.CREATED).body("Task creat cu ID-ul: " + taskId);
+    // Endpoint pentru a obține toate task-urile
+    @GetMapping
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        List<TaskDTO> tasks = taskWorkflowService.getAllTasks();
+        return ResponseEntity.ok(tasks);
     }
+
+
+    // Endpoint pentru a crea un task nou
+    @PostMapping(value = "/taskuri", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> creeazaTaskNou(@RequestBody TaskDTO taskDTO) {
+        Integer taskId = taskWorkflowService.creeazaTaskNou(taskDTO.getDescriere(), null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("{\"message\":\"Task creat cu ID-ul: " + taskId + "\"}");
+    }
+
 
     // Endpoint pentru a asigna un task unui membru
     @PostMapping("/{taskId}/assign/{membruId}")
