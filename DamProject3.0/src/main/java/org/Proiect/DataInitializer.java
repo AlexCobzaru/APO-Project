@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-//@Component
+@Component
 public class DataInitializer {
     @Autowired
     private DepartamentRepository departamentRepository;
@@ -38,7 +38,7 @@ public class DataInitializer {
 
     @Autowired
     private TaskRepository taskRepository;
-   //  @PostConstruct
+     @PostConstruct
     public void init() {
         System.out.println("Initializing data...");
         Departament departament1 = new Departament();

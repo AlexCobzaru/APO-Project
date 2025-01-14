@@ -86,4 +86,11 @@ public class DepartamentController {
         rezultatDTO.setManagerNume(departament.getManagerProiect().getNume());
         return ResponseEntity.ok(rezultatDTO);
     }
+    public void adaugaMembruLaDepartament(Integer departamentId, UtilizatorDTO utilizator) {
+        if (departamentId == null || utilizator == null) {
+            throw new IllegalArgumentException("Departament ID și utilizatorul nu pot fi null");
+        }
+    }
+
+
 }

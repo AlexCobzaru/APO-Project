@@ -2,6 +2,7 @@ package org.Proiect.ServiciiRest;
 
 import jakarta.annotation.PostConstruct;
 import org.Proiect.DTO.DepartamentDTO;
+import org.Proiect.DTO.UtilizatorDTO;
 import org.Proiect.Domain.Angajati.Departament;
 import org.Proiect.Servicii.Repository.DepartamentRepository;
 import org.modelmapper.ModelMapper;
@@ -105,4 +106,20 @@ public class DepartamentRESTService {
         departamentDTOMapper.addMappings(mapper -> mapper.map(Departament::getNumeDepartament, DepartamentDTO::setNumeDepartament));
 
     }
+    // === GET: Membrii unui departament ===
+    @RequestMapping(value = "/{departamentId}/membri", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @ResponseBody
+    public ResponseEntity<List<UtilizatorDTO>> getMembriiDepartament(@PathVariable int departamentId) {
+        logger.info("Fetching members for department with ID: " + departamentId);
+        List<UtilizatorDTO> membri = departamentRepository.findById(departamentId)
+                .map(departament -> departament.getAngajati().stream()
+                        .map(utilizator -> modelMapper.map(utilizator, UtilizatorDTO.class))
+                        .collect(Collectors.toList()))
+                .orElseThrow(() -> new IllegalArgumentException("Departamentul nu există"));
+
+        return ResponseEntity.ok(membri);
+    }
+
+
 }
