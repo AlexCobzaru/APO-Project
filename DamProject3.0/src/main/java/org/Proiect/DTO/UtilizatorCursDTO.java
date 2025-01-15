@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class UtilizatorCursDTO {
     private Long id;
-    private Integer utilizatorId;
+    private UtilizatorDTO utilizatorId;
     private Integer cursId;
     private boolean completat;
     private int progres;

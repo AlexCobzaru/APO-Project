@@ -135,4 +135,17 @@ public class DezvoltareWorkflowService implements IDezvoltareWorkflowService {
     public List<Badge> getAllBadges() {
         return badgeRepository.findAll();
     }
+
+    @Override
+    public void stergeCurs(Integer cursId) {
+        if (!cursRepository.existsById(cursId)) {
+            throw new IllegalArgumentException("Cursul cu ID-ul specificat nu există.");
+        }
+        cursRepository.deleteById(cursId);
     }
+
+    @Override
+    public List<Curs> obtineToateCursurile() {
+        return cursRepository.findAll();
+    }
+}

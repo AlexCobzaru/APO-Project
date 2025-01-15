@@ -8,5 +8,5 @@ public class CursDTO {
     private String titlu;
     private String descriere;
     private int durataOre;
-    private Integer adminId;
+    private UtilizatorDTO adminId;
 }

@@ -30,5 +30,8 @@ public interface IDezvoltareWorkflowService {
     Badge genereazaBadgePentruCurs(Integer cursId, Integer utilizatorId);
     // Obținerea tuturor badge-urilor
     List<Badge> getAllBadges();
-
+    // Ștergerea unui curs (Admin)
+    void stergeCurs(Integer cursId);
+    // Obținerea tuturor cursurilor
+    List<Curs> obtineToateCursurile();
 }

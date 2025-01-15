@@ -1,6 +1,7 @@
 package org.Proiect.Domain.Dezvoltare;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.Proiect.DTO.CursDTO;
 import org.Proiect.Domain.Angajati.Utilizator;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,4 +29,26 @@ public class Curs {
     @ManyToOne
     @JoinColumn(name = "admin_id", nullable = false)
     private Utilizator admin;
+
+    // === Mapper: Curs -> CursDTO ===
+    public CursDTO toDTO() {
+        CursDTO dto = new CursDTO();
+        dto.setId(this.id);
+        dto.setTitlu(this.titlu);
+        dto.setDescriere(this.descriere);
+        dto.setDurataOre(this.durataOre);
+        dto.setAdminId(this.toDTO().getAdminId());
+        return dto;
+    }
+
+    // === Mapper: CursDTO -> Curs ===
+    public static Curs fromDTO(CursDTO dto, Utilizator admin) {
+        Curs curs = new Curs();
+        curs.setId(dto.getId());
+        curs.setTitlu(dto.getTitlu());
+        curs.setDescriere(dto.getDescriere());
+        curs.setDurataOre(dto.getDurataOre());
+        curs.setAdmin(admin); // Adminul trebuie obținut din serviciul relevant
+        return curs;
+    }
 }

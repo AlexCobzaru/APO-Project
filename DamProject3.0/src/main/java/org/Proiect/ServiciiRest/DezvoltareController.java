@@ -1,13 +1,17 @@
 package org.Proiect.ServiciiRest;
 
-import jakarta.validation.Valid;
+
 import org.Proiect.DTO.BadgeDTO;
 import org.Proiect.DTO.CursDTO;
 import org.Proiect.DTO.UtilizatorCursDTO;
+import org.Proiect.Domain.Dezvoltare.Badge;
+import org.Proiect.Domain.Dezvoltare.Curs;
+import org.Proiect.Domain.Dezvoltare.UtilizatorCurs;
 import org.Proiect.Servicii.IDezvoltareWorkflowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,68 +20,97 @@ import java.util.stream.Collectors;
 @RequestMapping("/rest/servicii/dezvoltare")
 public class DezvoltareController {
 
-    private final IDezvoltareWorkflowService workflowService;
-
-    public DezvoltareController(IDezvoltareWorkflowService workflowService) {
-        this.workflowService = workflowService;
-    }
+    @Autowired
+    private IDezvoltareWorkflowService dezvoltareService;
 
     // Creare curs
-    @PostMapping("/cursuri")
-    public ResponseEntity<CursDTO> creeazaCurs(@Valid @RequestBody CursDTO cursDTO) {
-        var curs = workflowService.creeazaCurs(cursDTO.getTitlu(), cursDTO.getAdminId());
-        var rezultatDTO = new CursDTO();
-        rezultatDTO.setId(curs.getId());
-        rezultatDTO.setTitlu(curs.getTitlu());
-        rezultatDTO.setDescriere(curs.getDescriere());
-        rezultatDTO.setDurataOre(curs.getDurataOre());
-        rezultatDTO.setAdminId(curs.getAdmin().getUserId());
-        return ResponseEntity.ok(rezultatDTO);
+    @RequestMapping(value = "/cursuri", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CursDTO> creeazaCurs(@RequestBody CursDTO cursDTO) {
+        Curs curs = dezvoltareService.creeazaCurs(cursDTO.getTitlu(), cursDTO.getAdminId().getUserId());
+        return ResponseEntity.ok(curs.toDTO());
     }
 
-    // Vizualizare toate badge-urile
-    @GetMapping("/badge")
-    public ResponseEntity<List<BadgeDTO>> getAllBadges() {
-        var badges = workflowService.getAllBadges()
-                .stream()
-                .map(badge -> {
-                    var badgeDTO = new BadgeDTO();
-                    badgeDTO.setId(badge.getId());
-                    badgeDTO.setTitlu(badge.getTitlu());
-                    badgeDTO.setDescriere(badge.getDescriere());
-                    badgeDTO.setDificultate(badge.getDificultate());
-                    badgeDTO.setCursId(badge.getCurs().getId());
-                    return badgeDTO;
-                })
+    // Obținere detalii curs
+    @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CursDTO> vizualizeazaCurs(@PathVariable Integer id, @RequestParam Integer utilizatorId) {
+        return dezvoltareService.vizualizeazaCurs(id, utilizatorId)
+                .map(curs -> ResponseEntity.ok(curs.toDTO()))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Editare curs
+    @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.PUT,
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CursDTO> editeazaCurs(@PathVariable Integer id, @RequestBody CursDTO cursDTO) {
+        Curs curs = dezvoltareService.editeazaCurs(id, cursDTO.getTitlu());
+        return ResponseEntity.ok(curs.toDTO());
+    }
+
+    // Ștergere curs
+    @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.DELETE,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> stergeCurs(@PathVariable Integer id) {
+        dezvoltareService.stergeCurs(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Obținere toate cursurile
+    @RequestMapping(value = "/cursuri", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<CursDTO>> obtineToateCursurile() {
+        List<CursDTO> cursuri = dezvoltareService.obtineToateCursurile().stream()
+                .map(Curs::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(cursuri);
+    }
+
+    // Asignarea utilizatorilor la curs
+    @RequestMapping(value = "/cursuri/{id}/utilizatori", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Void> asigneazaUtilizatoriLaCurs(@PathVariable Integer id, @RequestBody List<Integer> utilizatorIds) {
+        dezvoltareService.asigneazaUtilizatoriLaCurs(id, utilizatorIds);
+        return ResponseEntity.ok().build();
+    }
+
+    // Obținere toate badge-urile
+    @RequestMapping(value = "/badges", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<BadgeDTO>> obtineToateBadgeurile() {
+        List<BadgeDTO> badges = dezvoltareService.getAllBadges().stream()
+                .map(Badge::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(badges);
     }
 
-    // Urmărire progres utilizator
-    @GetMapping("/utilizator-progres")
-    public ResponseEntity<UtilizatorCursDTO> urmaresteProgres(@RequestParam Integer cursId, @RequestParam Integer utilizatorId) {
-        var progres = workflowService.urmaresteProgresPropriu(cursId, utilizatorId);
-        var progresDTO = new UtilizatorCursDTO();
-        progresDTO.setId(progres.getId());
-        progresDTO.setCursId(progres.getCurs().getId());
-        progresDTO.setUtilizatorId(progres.getUtilizator().getUserId());
-        progresDTO.setCompletat(progres.isCompletat());
-        progresDTO.setProgres(progres.getProgres());
-        progresDTO.setDataInrolare(progres.getDataInrolare());
-        progresDTO.setDataFinalizare(progres.getDataFinalizare());
-        return ResponseEntity.ok(progresDTO);
+    // Generare badge pentru utilizator
+    @RequestMapping(value = "/badges/{cursId}/utilizator/{utilizatorId}", method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<BadgeDTO> genereazaBadge(@PathVariable Integer cursId, @PathVariable Integer utilizatorId) {
+        Badge badge = dezvoltareService.genereazaBadgePentruCurs(cursId, utilizatorId);
+        return ResponseEntity.ok(badge.toDTO());
     }
 
-    // Generare badge pentru un utilizator
-    @PostMapping("/badge")
-    public ResponseEntity<BadgeDTO> genereazaBadge(@RequestParam Integer cursId, @RequestParam Integer utilizatorId) {
-        var badge = workflowService.genereazaBadgePentruCurs(cursId, utilizatorId);
-        var badgeDTO = new BadgeDTO();
-        badgeDTO.setId(badge.getId());
-        badgeDTO.setTitlu(badge.getTitlu());
-        badgeDTO.setDescriere(badge.getDescriere());
-        badgeDTO.setDificultate(badge.getDificultate());
-        badgeDTO.setCursId(badge.getCurs().getId());
-        return ResponseEntity.ok(badgeDTO);
+    // Urmărire progres utilizatori într-un curs
+    @RequestMapping(value = "/cursuri/{cursId}/progres", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<UtilizatorCursDTO>> urmaresteProgres(@PathVariable Integer cursId, @RequestParam Integer managerId) {
+        List<UtilizatorCursDTO> progres = dezvoltareService.urmaresteProgresAngajati(cursId, managerId).stream()
+                .map(UtilizatorCurs::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(progres);
+    }
+
+    // Urmărire progres propriu într-un curs
+    @RequestMapping(value = "/cursuri/{cursId}/utilizator/{utilizatorId}/progres", method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UtilizatorCursDTO> urmaresteProgresPropriu(@PathVariable Integer cursId, @PathVariable Integer utilizatorId) {
+        UtilizatorCurs progres = dezvoltareService.urmaresteProgresPropriu(cursId, utilizatorId);
+        return ResponseEntity.ok(progres.toDTO());
     }
 }
