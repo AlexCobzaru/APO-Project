@@ -25,8 +25,8 @@ public class DezvoltareController {
 
     // Creare curs
     @RequestMapping(value = "/cursuri", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            consumes = { MediaType.APPLICATION_JSON_VALUE},
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CursDTO> creeazaCurs(@RequestBody CursDTO cursDTO) {
         Curs curs = dezvoltareService.creeazaCurs(cursDTO.getTitlu(), cursDTO.getAdminId().getUserId());
         return ResponseEntity.ok(curs.toDTO());
@@ -34,7 +34,7 @@ public class DezvoltareController {
 
     // Obținere detalii curs
     @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CursDTO> vizualizeazaCurs(@PathVariable Integer id, @RequestParam Integer utilizatorId) {
         return dezvoltareService.vizualizeazaCurs(id, utilizatorId)
                 .map(curs -> ResponseEntity.ok(curs.toDTO()))
@@ -43,8 +43,8 @@ public class DezvoltareController {
 
     // Editare curs
     @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.PUT,
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            consumes = { MediaType.APPLICATION_JSON_VALUE},
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CursDTO> editeazaCurs(@PathVariable Integer id, @RequestBody CursDTO cursDTO) {
         Curs curs = dezvoltareService.editeazaCurs(id, cursDTO.getTitlu());
         return ResponseEntity.ok(curs.toDTO());
@@ -52,7 +52,7 @@ public class DezvoltareController {
 
     // Ștergere curs
     @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.DELETE,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> stergeCurs(@PathVariable Integer id) {
         dezvoltareService.stergeCurs(id);
         return ResponseEntity.noContent().build();
@@ -60,7 +60,7 @@ public class DezvoltareController {
 
     // Obținere toate cursurile
     @RequestMapping(value = "/cursuri", method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<CursDTO>> obtineToateCursurile() {
         List<CursDTO> cursuri = dezvoltareService.obtineToateCursurile().stream()
                 .map(Curs::toDTO)
@@ -70,8 +70,8 @@ public class DezvoltareController {
 
     // Asignarea utilizatorilor la curs
     @RequestMapping(value = "/cursuri/{id}/utilizatori", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            consumes = { MediaType.APPLICATION_JSON_VALUE},
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Void> asigneazaUtilizatoriLaCurs(@PathVariable Integer id, @RequestBody List<Integer> utilizatorIds) {
         dezvoltareService.asigneazaUtilizatoriLaCurs(id, utilizatorIds);
         return ResponseEntity.ok().build();
@@ -79,7 +79,7 @@ public class DezvoltareController {
 
     // Obținere toate badge-urile
     @RequestMapping(value = "/badges", method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<BadgeDTO>> obtineToateBadgeurile() {
         List<BadgeDTO> badges = dezvoltareService.getAllBadges().stream()
                 .map(Badge::toDTO)
@@ -89,8 +89,8 @@ public class DezvoltareController {
 
     // Generare badge pentru utilizator
     @RequestMapping(value = "/badges/{cursId}/utilizator/{utilizatorId}", method = RequestMethod.POST,
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            consumes = { MediaType.APPLICATION_JSON_VALUE},
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BadgeDTO> genereazaBadge(@PathVariable Integer cursId, @PathVariable Integer utilizatorId) {
         Badge badge = dezvoltareService.genereazaBadgePentruCurs(cursId, utilizatorId);
         return ResponseEntity.ok(badge.toDTO());
@@ -98,7 +98,7 @@ public class DezvoltareController {
 
     // Urmărire progres utilizatori într-un curs
     @RequestMapping(value = "/cursuri/{cursId}/progres", method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<UtilizatorCursDTO>> urmaresteProgres(@PathVariable Integer cursId, @RequestParam Integer managerId) {
         List<UtilizatorCursDTO> progres = dezvoltareService.urmaresteProgresAngajati(cursId, managerId).stream()
                 .map(UtilizatorCurs::toDTO)
@@ -108,7 +108,7 @@ public class DezvoltareController {
 
     // Urmărire progres propriu într-un curs
     @RequestMapping(value = "/cursuri/{cursId}/utilizator/{utilizatorId}/progres", method = RequestMethod.GET,
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            produces = { MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UtilizatorCursDTO> urmaresteProgresPropriu(@PathVariable Integer cursId, @PathVariable Integer utilizatorId) {
         UtilizatorCurs progres = dezvoltareService.urmaresteProgresPropriu(cursId, utilizatorId);
         return ResponseEntity.ok(progres.toDTO());

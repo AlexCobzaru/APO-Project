@@ -30,16 +30,22 @@ public class Curs {
     @JoinColumn(name = "admin_id", nullable = false)
     private Utilizator admin;
 
-    // === Mapper: Curs -> CursDTO ===
+    // Mapper: Curs -> CursDTO
     public CursDTO toDTO() {
         CursDTO dto = new CursDTO();
         dto.setId(this.id);
         dto.setTitlu(this.titlu);
         dto.setDescriere(this.descriere);
         dto.setDurataOre(this.durataOre);
-        dto.setAdminId(this.toDTO().getAdminId());
+
+        // Setează ID-ul adminului corect, fără apel recursiv
+        if (this.admin != null) {
+            dto.setAdminId(this.admin.toDTO()); // Mapăm utilizatorul admin la un DTO
+        }
+
         return dto;
     }
+
 
     // === Mapper: CursDTO -> Curs ===
     public static Curs fromDTO(CursDTO dto, Utilizator admin) {

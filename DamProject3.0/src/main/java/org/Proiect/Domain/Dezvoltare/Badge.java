@@ -25,16 +25,21 @@ public class Badge {
     private String descriere;
 
     private int dificultate; // 1 = ușor, 5 = foarte greu
-    // === Mapper: Badge -> BadgeDTO ===
     public BadgeDTO toDTO() {
         BadgeDTO dto = new BadgeDTO();
         dto.setId(this.id);
         dto.setTitlu(this.titlu);
         dto.setDescriere(this.descriere);
         dto.setDificultate(this.dificultate);
-        dto.setCursId(this.toDTO().getCursId());
+
+        // Setează cursul fără a provoca recursivitate
+        if (this.curs != null) {
+            dto.setCursId(this.curs.toDTO()); // Mapăm cursul la un DTO
+        }
+
         return dto;
     }
+
 
     // === Mapper: BadgeDTO -> Badge ===
     public static Badge fromDTO(BadgeDTO dto, Curs curs) {

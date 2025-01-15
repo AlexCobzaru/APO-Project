@@ -31,18 +31,28 @@ public class UtilizatorCurs {
     private Date dataInrolare;
     private Date dataFinalizare;
 
-    // === Mapper: UtilizatorCurs -> UtilizatorCursDTO ===
     public UtilizatorCursDTO toDTO() {
         UtilizatorCursDTO dto = new UtilizatorCursDTO();
         dto.setId(this.id);
-        dto.setUtilizatorId(this.toDTO().getUtilizatorId());
-        dto.setCursId(this.curs != null ? this.curs.getId() : null);
+
+        // Setează utilizatorul fără recursivitate
+        if (this.utilizator != null) {
+            dto.setUtilizatorId(this.utilizator.toDTO()); // Mapăm utilizatorul la un DTO
+        }
+
+        // Setează cursul fără recursivitate
+        if (this.curs != null) {
+            dto.setCursId(this.curs.getId()); // Setează doar ID-ul cursului
+        }
+
         dto.setCompletat(this.completat);
         dto.setProgres(this.progres);
         dto.setDataInrolare(this.dataInrolare);
         dto.setDataFinalizare(this.dataFinalizare);
+
         return dto;
     }
+
 
     // === Mapper: UtilizatorCursDTO -> UtilizatorCurs ===
     public static UtilizatorCurs fromDTO(UtilizatorCursDTO dto, Utilizator utilizator, Curs curs) {
