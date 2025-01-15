@@ -55,6 +55,15 @@ public class UtilizatorRESTService {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    // === GET: Membri ===
+    @GetMapping(value = "/membri", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UtilizatorDTO> getAllMembri() {
+        logger.info("Fetching all members...");
+        return utilizatorRepository.findAllByTipUtilizator(TipUtilizator.MEMBRUECHIPA).stream()
+                .map(utilizator -> modelMapper.map(utilizator, UtilizatorDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
     // === POST: Creare utilizator ===
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,4 +97,13 @@ public class UtilizatorRESTService {
         }
         return ResponseEntity.notFound().build();
     }
+    // === GET: Admini ===
+    @GetMapping(value = "/admini", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UtilizatorDTO> getAllAdmini() {
+        logger.info("Fetching all admins...");
+        return utilizatorRepository.findAllByTipUtilizator(TipUtilizator.ADMIN).stream()
+                .map(utilizator -> modelMapper.map(utilizator, UtilizatorDTO.class))
+                .collect(Collectors.toList());
+    }
+
 }

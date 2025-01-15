@@ -4,10 +4,12 @@ package org.Proiect.ServiciiRest;
 import org.Proiect.DTO.BadgeDTO;
 import org.Proiect.DTO.CursDTO;
 import org.Proiect.DTO.UtilizatorCursDTO;
+import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.Dezvoltare.Badge;
 import org.Proiect.Domain.Dezvoltare.Curs;
 import org.Proiect.Domain.Dezvoltare.UtilizatorCurs;
 import org.Proiect.Servicii.IDezvoltareWorkflowService;
+import org.Proiect.Servicii.Repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +21,36 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/rest/servicii/dezvoltare")
 public class DezvoltareController {
+    @Autowired
+    private AppUserRepository appUserRepository;
 
     @Autowired
     private IDezvoltareWorkflowService dezvoltareService;
 
-    // Creare curs
     @RequestMapping(value = "/cursuri", method = RequestMethod.POST,
-            consumes = { MediaType.APPLICATION_JSON_VALUE},
-            produces = { MediaType.APPLICATION_JSON_VALUE})
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<CursDTO> creeazaCurs(@RequestBody CursDTO cursDTO) {
-        Curs curs = dezvoltareService.creeazaCurs(cursDTO.getTitlu(), cursDTO.getAdminId().getUserId());
+        // Obținem ID-ul utilizatorului din DTO (Admin)
+        Integer adminId = cursDTO.getAdminId().getUserId();
+
+        // Căutăm utilizatorul din baza de date pe baza ID-ului (Admin)
+        Utilizator admin = appUserRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Utilizatorul cu ID-ul " + adminId + " nu a fost găsit"));
+
+        // Creăm cursul folosind entitatea Utilizator
+        Curs curs = dezvoltareService.creeazaCurs(
+                cursDTO.getTitlu(),
+                admin,  // Transmitem obiectul Utilizator la serviciu
+                cursDTO.getDescriere(),
+                cursDTO.getDurataOre());
+
+        // Returnăm un DTO cu datele cursului creat
         return ResponseEntity.ok(curs.toDTO());
     }
+
+
+
 
     // Obținere detalii curs
     @RequestMapping(value = "/cursuri/{id}", method = RequestMethod.GET,
@@ -113,4 +133,14 @@ public class DezvoltareController {
         UtilizatorCurs progres = dezvoltareService.urmaresteProgresPropriu(cursId, utilizatorId);
         return ResponseEntity.ok(progres.toDTO());
     }
+
+    // Obținere detalii utilizatori asignați unui curs (progres, completare etc.)
+    @RequestMapping(value = "/cursuri/{cursId}/utilizatori/detalii", method = RequestMethod.GET,
+            produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<List<UtilizatorCursDTO>> obtineDetaliiUtilizatori(@PathVariable Integer cursId) {
+        // Apelează serviciul pentru a obține utilizatorii și progresul lor
+        List<UtilizatorCursDTO> detaliiUtilizatori = dezvoltareService.obtineDetaliiUtilizatoriCurs(cursId);
+        return ResponseEntity.ok(detaliiUtilizatori);
+    }
+
 }

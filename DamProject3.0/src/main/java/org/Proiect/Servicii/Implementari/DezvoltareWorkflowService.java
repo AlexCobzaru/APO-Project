@@ -1,5 +1,6 @@
 package org.Proiect.Servicii.Implementari;
 
+import org.Proiect.DTO.UtilizatorCursDTO;
 import org.Proiect.Domain.Angajati.Utilizator;
 import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Dezvoltare.Badge;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DezvoltareWorkflowService implements IDezvoltareWorkflowService {
@@ -31,23 +33,38 @@ public class DezvoltareWorkflowService implements IDezvoltareWorkflowService {
     @Autowired
     private BadgeRepository badgeRepository;
 
-    @Override
-    public Curs creeazaCurs(String titlu, Integer adminId) {
-        Utilizator admin = utilizatorRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("Adminul nu există."));
 
-        // Verificăm dacă utilizatorul are drepturi de a crea cursuri
-        if (admin.getTipUtilizator() != TipUtilizator.ADMIN) {
-            throw new SecurityException("Doar utilizatorii de tip Admin pot crea cursuri.");
+    @Override
+    public Curs creeazaCurs(String titlu, Utilizator adminId, String descriere, Integer durataOre) {
+        if (adminId.getTipUtilizator() != TipUtilizator.ADMIN) {
+            throw new UnauthorizedAccessException("Doar utilizatorii de tip ADMIN pot crea cursuri.");
         }
 
+        // Crearea unui obiect Curs
         Curs curs = new Curs();
         curs.setTitlu(titlu);
-        curs.setAdmin(admin); // Asigură-te că setăm corect utilizatorul admin
+        curs.setDescriere(descriere);
+        curs.setDurataOre(durataOre);
+        curs.setAdmin(adminId);
 
-        // Salvăm cursul
-        return cursRepository.save(curs);
+        // Salvarea cursului în baza de date
+        curs = cursRepository.save(curs);
+
+        // Returnează cursul creat
+        return curs;
     }
+
+    @Override
+    public List<UtilizatorCursDTO> obtineDetaliiUtilizatoriCurs(Integer cursId) {
+        Curs curs = cursRepository.findById(cursId)
+                .orElseThrow(() -> new RuntimeException("Cursul cu ID-ul " + cursId + " nu a fost găsit"));
+
+        // Obține lista de utilizatori curs (progres, completare etc.)
+        return curs.getUtilizatoriCursuri().stream()
+                .map(UtilizatorCurs::toDTO) // Transformăm fiecare entitate în DTO
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void asigneazaUtilizatoriLaCurs(Integer cursId, List<Integer> utilizatorIds) {
@@ -148,4 +165,10 @@ public class DezvoltareWorkflowService implements IDezvoltareWorkflowService {
     public List<Curs> obtineToateCursurile() {
         return cursRepository.findAll();
     }
+    public class UnauthorizedAccessException extends RuntimeException {
+        public UnauthorizedAccessException(String message) {
+            super(message);
+        }
+    }
+
 }

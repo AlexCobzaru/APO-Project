@@ -1,5 +1,8 @@
 package org.Proiect.Servicii;
 
+import org.Proiect.DTO.UtilizatorCursDTO;
+import org.Proiect.Domain.Angajati.Utilizator;
+import org.Proiect.Domain.App.TipUtilizator;
 import org.Proiect.Domain.Dezvoltare.Badge;
 import org.Proiect.Domain.Dezvoltare.Curs;
 import org.Proiect.Domain.Dezvoltare.UtilizatorCurs;
@@ -9,7 +12,9 @@ import java.util.Optional;
 
 public interface IDezvoltareWorkflowService {
     // Crearea unui curs (doar pentru Admin)
-    Curs creeazaCurs(String titlu, Integer adminId);
+    Curs creeazaCurs(String titlu, Utilizator adminId, String descriere, Integer durataOre);
+    List<UtilizatorCursDTO> obtineDetaliiUtilizatoriCurs(Integer cursId);
+
 
     // Asignarea utilizatorilor la curs (Admin)
     void asigneazaUtilizatoriLaCurs(Integer cursId, List<Integer> utilizatorIds);
